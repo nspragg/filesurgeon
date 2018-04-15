@@ -2,15 +2,10 @@
 
 ![npm](https://img.shields.io/npm/v/filesurgeon.svg)
 [![Build Status](https://travis-ci.org/nspragg/filesurgeon.svg)](https://travis-ci.org/nspragg/filesurgeon)
-[![Coverage Status](https://coveralls.io/repos/github/nspragg/filesurgeon/badge.svg?branch=master)](https://coveralls.io/github/nspragg/filesurgeon?branch=master)
 ![license](https://img.shields.io/badge/license-MIT-blue.svg)
 ![github-issues](https://img.shields.io/github/issues/nspragg/filesurgeon.svg)
-![stars](https://img.shields.io/github/stars/nspragg/filesurgeon.svg)
-![forks](https://img.shields.io/github/forks/nspragg/filesurgeon.svg)
 
 > Manipulate text files the easy way
-
-![nodei.co](https://nodei.co/npm/filesurgeon.png?downloads=true&downloadRank=true&stars=true)
 
 ## Installation
 

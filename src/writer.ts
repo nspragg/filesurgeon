@@ -1,3 +1,4 @@
+// @interface
 export interface Writer {
     // tslint:disable-next-line:valid-jsdoc
     /**

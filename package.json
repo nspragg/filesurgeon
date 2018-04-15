@@ -1,6 +1,6 @@
 {
   "name": "filesurgeon",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Manipulate files the easy way",
   "main": "index.js",
   "scripts": {
