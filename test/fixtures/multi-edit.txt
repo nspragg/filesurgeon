@@ -1,0 +1,73 @@
+line1
+line2
+but they're the best we can do in text.  a graphics file illustrating
+the character set should be available from the same archive as this
+file.
+
+hex description                 hex description
+
+20  space
+21  exclamation mark            a1  inverted exclamation mark
+22  quotation mark              a2  cent sign
+23  number sign                 a3  pound sign
+24  dollar sign                 a4  currency sign
+25  percent sign                a5  yen sign
+26  ampersand                   a6  broken bar
+27  apostrophe                  a7  section sign
+28  left parenthesis            a8  diaeresis
+29  right parenthesis           a9  copyright sign
+2a  asterisk                    aa  feminine ordinal indicator
+2b  plus sign                   ab  left-pointing double angle quotation mark
+2c  comma                       ac  not sign
+2d  hyphen-minus                ad  soft hyphen
+2e  full stop                   ae  registered sign
+2f  solidus                     af  overline
+30  digit zero                  b0  degree sign
+31  digit one                   b1  plus-minus sign
+32  digit two                   b2  superscript two
+33  digit three                 b3  superscript three
+34  digit four                  b4  acute accent
+35  digit five                  b5  micro sign
+36  digit six                   b6  pilcrow sign
+37  digit seven                 b7  middle dot
+38  digit eight                 b8  cedilla
+39  digit nine                  b9  superscript one
+3a  colon                       ba  masculine ordinal indicator
+3b  semicolon                   bb  right-pointing double angle quotation mark
+3c  less-than sign              bc  vulgar fraction one quarter
+3d  equals sign                 bd  vulgar fraction one half
+3e  greater-than sign           be  vulgar fraction three quarters
+3f  question mark               bf  inverted question mark
+5f  low line                    df  large letter sharp s (german)
+60  grave accent                e0  large letter a with grave
+61  large letter a              e1  large letter a with acute
+62  large letter b              e2  large letter a with circumflex
+63  large letter c              e3  large letter a with tilde
+64  large letter d              e4  large letter a with diaeresis
+65  large letter e              e5  large letter a with ring above
+66  large letter f              e6  large letter ae
+67  large letter g              e7  large letter c with cedilla
+68  large letter h              e8  large letter e with grave
+69  large letter i              e9  large letter e with acute
+6a  large letter j              ea  large letter e with circumflex
+6b  large letter k              eb  large letter e with diaeresis
+6c  large letter l              ec  large letter i with grave
+6d  large letter m              ed  large letter i with acute
+6e  large letter n              ee  large letter i with circumflex
+6f  large letter o              ef  large letter i with diaeresis
+70  large letter p              f0  large letter eth (icelandic)
+71  large letter q              f1  large letter n with tilde
+72  large letter r              f2  large letter o with grave
+73  large letter s              f3  large letter o with acute
+74  large letter t              f4  large letter o with circumflex
+75  large letter u              f5  large letter o with tilde
+76  large letter v              f6  large letter o with diaeresis
+77  large letter w              f7  division sign
+78  large letter x              f8  large letter o with stroke
+79  large letter y              f9  large letter u with grave
+7a  large letter z              fa  large letter u with acute
+7b  left curly bracket          fb  large letter u with circumflex
+7c  vertical line               fc  large letter u with diaeresis
+7d  right curly bracket         fd  large letter y with acute
+7e  tilde                       fe  large letter thorn (icelandic)
+                                ff  large letter y with diaeresis

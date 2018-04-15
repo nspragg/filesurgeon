@@ -1,0 +1,10 @@
+filter reset
+31  DIGIT ONE                   B1  PLUS-MINUS SIGN
+filter reset
+33  DIGIT THREE                 B3  SUPERSCRIPT THREE
+34  DIGIT FOUR                  B4  ACUTE ACCENT
+35  DIGIT FIVE                  B5  MICRO SIGN
+36  DIGIT SIX                   B6  PILCROW SIGN
+37  DIGIT SEVEN                 B7  MIDDLE DOT
+38  DIGIT EIGHT                 B8  CEDILLA
+39  DIGIT NINE                  B9  SUPERSCRIPT ONE
