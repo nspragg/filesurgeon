@@ -5,7 +5,7 @@ import * as File from 'file-js';
 import { copy, getAbsolutePath, deleteFile } from './utils';
 
 import { Writer } from '../src/writer';
-import FileSurgeon from '../src/FileSurgeon';
+import * as FileSurgeon from '../index';
 
 const sandbox = sinon.sandbox.create();
 
