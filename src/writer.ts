@@ -77,7 +77,7 @@ export interface Writer {
      * Filters the file contents using a given function
      *
      * @method
-     * set
+     * filter
      * @param {function} fn
      * @return Writer
      * @example
@@ -96,7 +96,7 @@ export interface Writer {
      * Maps each line using a given function
      *
      * @method
-     * set
+     * map
      * @param {function} fn
      * @return Writer
      * @example

@@ -40,7 +40,7 @@ export default class FileSurgeon {
      * @static
      * @memberOf FileSurgeon
      * @method
-     * asString
+     * asArray
      * @return FileSurgeon Promise<string>
      * @example
      * import FileSurgeon from 'FileSurgeon';
@@ -84,7 +84,7 @@ export default class FileSurgeon {
      * @static
      * @memberOf FileSurgeon
      * @method
-     * asString
+     * edit
      * @param {string} filename
      * @return Writer
      * @example

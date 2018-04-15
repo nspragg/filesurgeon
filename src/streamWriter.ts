@@ -69,6 +69,8 @@ function replace(from, to) {
     });
 }
 
+/** @class */
+/** @implements {Writer} */
 export class StreamWriter implements Writer {
     private filename: string;
     private encoding: string;
