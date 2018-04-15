@@ -15,7 +15,7 @@ npm install --save filesurgeon
 
 ## Usage
 
-The example below overrides the first line and converts each file to lower case:
+The example below overrides the first line and converts each line to lower case:
 
 ```js
 const Filesurgeon = require("filesurgeon");

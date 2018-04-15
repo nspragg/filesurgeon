@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>streamWriter.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.edit">edit</a></li></ul></li><li><a href="StreamWriter.html">StreamWriter</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">streamWriter.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const path = require("path");
+const _ = require("highland");
+const fs = require("fs");
+const util_1 = require("util");
+const lineStream_1 = require("./lineStream");
+const bind_1 = require("./bind");
+const readFile = util_1.promisify(fs.readFile);
+const writeFile = util_1.promisify(fs.writeFile);
+const rename = util_1.promisify(fs.rename);
+const rm = util_1.promisify(fs.unlink);
+function toLine(obj) {
+    return obj.data + '\n';
+}
+function toObject() {
+    let count = 0;
+    return (line) => {
+        return {
+            data: line.toString(),
+            num: ++count
+        };
+    };
+}
+function reset() {
+    let count = 0;
+    return _.map((line) => {
+        line.num = ++count;
+        return line;
+    });
+}
+function setline(lineNumber, to) {
+    return _.map((line) => {
+        if (line.num == lineNumber) {
+            line.data = to;
+        }
+        return line;
+    });
+}
+function map(fn) {
+    return _.map((line) => {
+        line.data = fn(line.data);
+        return line;
+    });
+}
+function filter(fn) {
+    return _.filter((line) => {
+        return fn(line.data);
+    });
+}
+function deleteLine(n) {
+    return _.filter((line) => {
+        return line.num != n;
+    });
+}
+function replace(from, to) {
+    return _.map((line) => {
+        line.data = line.data.replace(from, to);
+        return line;
+    });
+}
+/** @class */
+/** @implements {Writer} */
+class StreamWriter {
+    constructor(filename, encoding = 'utf8') {
+        this.filename = filename;
+        this.encoding = encoding;
+        this._prepend = [];
+        this._append = [];
+        this.transforms = [];
+        bind_1.default(this);
+    }
+    set(i, line) {
+        this.transforms.push(setline(i, line));
+        return this;
+    }
+    prepend(line) {
+        this._prepend.push(line);
+        return this;
+    }
+    append(line) {
+        this._append.push(`${line}\n`);
+        return this;
+    }
+    replace(x, y) {
+        this.transforms.push(replace(x, y));
+        return this;
+    }
+    map(fn) {
+        this.transforms.push(map(fn));
+        return this;
+    }
+    filter(fn) {
+        this.transforms.push(filter(fn));
+        this.transforms.push(reset());
+        return this;
+    }
+    delete(n) {
+        this.transforms.push(deleteLine(n));
+        this.transforms.push(reset());
+        return this;
+    }
+    async save() {
+        let tmp;
+        let source;
+        let dest;
+        try {
+            source = this.createSourceStream();
+            tmp = this.getTempFile();
+            dest = fs.createWriteStream(tmp);
+            await this.modify(source, dest);
+            await rename(tmp, this.filename);
+        }
+        finally {
+            dest.destroy();
+            source.destroy();
+            if (fs.existsSync(tmp)) {
+                rm(tmp);
+            }
+        }
+    }
+    async preview(dest) {
+        let source;
+        dest = dest || process.stdout;
+        try {
+            source = this.createSourceStream();
+            await this.modify(source, dest);
+        }
+        finally {
+            dest.destroy();
+            source.destroy();
+        }
+    }
+    getTempFile() {
+        const name = 'tmp_' +
+            process.pid + '_' +
+            Math.random()
+                .toString(36)
+                .substring(5);
+        return path.join(path.dirname(this.filename), name);
+    }
+    createPipeline() {
+        let transforms = [
+            _.map(toObject()),
+            ...this.transforms,
+            _.map(toLine)
+        ];
+        this.transforms = [];
+        return _.pipeline(...transforms);
+    }
+    getLines() {
+        return _(this._append);
+    }
+    createSourceStream() {
+        const source = lineStream_1.createStream(this.filename);
+        return source;
+    }
+    consume(source) {
+        const dest = _();
+        let count = 0;
+        let last;
+        return new Promise((resolve) => {
+            source.on('readable', () => {
+                let line;
+                while (null !== (line = source.read())) {
+                    if (line instanceof Buffer) {
+                        line = line.toString('utf8');
+                    }
+                    last = line;
+                    count++;
+                    dest.write(line);
+                }
+            });
+            source.on('end', () => {
+                dest.end();
+                if (last === '') {
+                    resolve(_(dest).take(count - 1));
+                }
+            });
+        });
+    }
+    async modify(source, destination) {
+        let contents;
+        try {
+            contents = await this.consume(source);
+            return new Promise((resolve) => {
+                _(this._prepend)
+                    .concat(contents)
+                    .pipe(this.createPipeline())
+                    .concat(this.getLines())
+                    .pipe(destination);
+                destination.on('finish', () => {
+                    resolve();
+                });
+            });
+        }
+        finally {
+            contents.destroy();
+        }
+    }
+}
+exports.StreamWriter = StreamWriter;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Apr 15 2018 19:15:08 GMT+0100 (BST) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
