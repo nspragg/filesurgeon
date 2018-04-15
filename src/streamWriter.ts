@@ -132,6 +132,20 @@ export class StreamWriter implements Writer {
         }
     }
 
+    async preview(dest): Promise<void> {
+        let source;
+        dest = dest || process.stdout;
+
+        try {
+            source = this.createSourceStream();
+            await this.modify(source, dest);
+
+        } finally {
+            dest.destroy();
+            source.destroy();
+        }
+    }
+
     private getTempFile() {
         const name = 'tmp_' +
             process.pid + '_' +
