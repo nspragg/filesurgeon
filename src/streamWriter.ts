@@ -28,10 +28,10 @@ function toObject() {
 
 function reset() {
     let count = 0;
-    return (line) => {
+    return _.map((line) => {
         line.num = ++count;
         return line;
-    };
+    });
 }
 
 function setline(lineNumber, to) {
@@ -53,6 +53,12 @@ function map(fn) {
 function filter(fn) {
     return _.filter((line) => {
         return fn(line.data);
+    });
+}
+
+function deleteLine(n) {
+    return _.filter((line) => {
+        return line.num != n;
     });
 }
 
@@ -106,7 +112,13 @@ export class StreamWriter implements Writer {
 
     filter(fn: (string: any) => boolean): Writer {
         this.transforms.push(filter(fn));
-        this.transforms.push(_.map(reset()));
+        this.transforms.push(reset());
+        return this;
+    }
+
+    delete(n: number): Writer {
+        this.transforms.push(deleteLine(n));
+        this.transforms.push(reset());
         return this;
     }
 

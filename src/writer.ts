@@ -1,4 +1,4 @@
-// @interface
+/** @interface */
 export interface Writer {
     // tslint:disable-next-line:valid-jsdoc
     /**
@@ -16,6 +16,7 @@ export interface Writer {
      *  .save();
      */
     prepend(line: string): Writer
+
     // tslint:disable-next-line:valid-jsdoc
     /**
      * Appends a given `line` to a file
@@ -108,6 +109,23 @@ export interface Writer {
      *  .save();
      */
     map(fn: (string) => string): Writer
+
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Deletes line by line number
+     *
+     * @method
+     * delete
+     * @param {function} fn
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .delete(10)
+     *  .save(); // delete line 10
+     */
+    delete(n: number): Writer
 
     // tslint:disable-next-line:valid-jsdoc
     /**

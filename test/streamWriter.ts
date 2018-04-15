@@ -290,4 +290,31 @@ describe('Stream', () => {
       }
     });
   });
+
+  describe('.delete', () => {
+    let file;
+    beforeEach(() => {
+      const source = getAbsolutePath(fixture);
+      file = getAbsolutePath(fixture + '_tmp');
+      copy(source, file)
+    });
+
+    afterEach(() => {
+      deleteFile(file);
+    });
+
+    it('delete a line specified by lie number', async () => {
+      await FileSurgeon.create(file)
+        .edit()
+        .delete(10)
+        .delete(20)
+        .save();
+
+      const arr = await FileSurgeon.asArray(file);
+      const expected = await FileSurgeon.asArray(getAbsolutePath('delete.txt'));
+
+      assert.deepEqual(arr, expected);
+    });
+  });
+
 });
