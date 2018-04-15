@@ -69,7 +69,6 @@
   },
   "dependencies": {
     "byline": "^5.0.0",
-    "highland": "^2.13.0",
-    "lodash": "^4.13.1"
+    "highland": "^2.13.0"
   }
 }
