@@ -7,7 +7,6 @@
     "lint": "tslint --project tsconfig.json",
     "build": "npm run clean && tsc",
     "jsdoc": "jsdoc -c ./docconfig/jsdoc.json",
-    "postinstall": "npm run build",
     "clean": "rm -fr dist/*",
     "pretest": "npm run build",
     "watch": "tsc --watch",
