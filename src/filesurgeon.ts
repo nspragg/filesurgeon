@@ -7,7 +7,7 @@ import { createStream } from './lineStream';
 
 const readFileAsync = promisify(fs.readFile);
 
-// @class
+/** @class */
 export default class FileSurgeon {
     private filename: string;
 
