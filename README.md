@@ -25,15 +25,13 @@ The example below overrides the first line and converts each file to lower case:
 ```js
 const Filesurgeon = require("filesurgeon");
 
-const lines = await Filesurgeon.create('/tmp/somefile.txt')
+await Filesurgeon.create('/tmp/somefile.txt')
   .edit()
   .set(1, 'line 1')
   .map((line) => {
     return line.toLowerCase();
   })
-  .save();
-
-console.log(lines);
+  .save(); // commit to file
 ```
 
 ## Documentation
