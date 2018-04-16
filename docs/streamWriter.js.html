@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.edit">edit</a></li></ul></li><li><a href="StreamWriter.html">StreamWriter</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.edit">edit</a></li></ul></li><li><a href="StreamWriter.html">StreamWriter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#set">set</a></li></ul>
 </nav>
 
 <div id="main">
@@ -111,36 +111,166 @@ class StreamWriter {
         this.transforms = [];
         bind_1.default(this);
     }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * sets a `line` at a given line number `N`
+     *
+     * @method
+     * set
+     * @param {string} line
+     * @param {number} n
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .set(1, line)
+     *  .set(10, anotherline)
+     *  .save();
+     */
     set(i, line) {
         this.transforms.push(setline(i, line));
         return this;
     }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Prepends a given `line` to a file
+     *
+     * @method
+     * prepend
+     * @param {string} line
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .prepend(line)
+     *  .save();
+     */
     prepend(line) {
         this._prepend.push(line);
         return this;
     }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Appends a given `line` to a file
+     *
+     * @method
+     * append
+     * @param {string} line
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .append(line)
+     *  .save();
+     */
     append(line) {
         this._append.push(`${line}\n`);
         return this;
     }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * replaces a given string or regex for every line
+     *
+     * @method
+     * replace
+     * @param {string|RegExp} source
+     * @param {string} replacement
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .replace('x', 'y')
+     *  .replace(/x/, 'y')
+     *  .save();
+     */
     replace(x, y) {
         this.transforms.push(replace(x, y));
         return this;
     }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Maps each line using a given function
+     *
+     * @method
+     * map
+     * @param {function} fn
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .map((line) => {
+     *      return line.toLowerCase() &lt; 10;
+     *  })
+     *  .save();
+     */
     map(fn) {
         this.transforms.push(map(fn));
         return this;
     }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Filters the file contents using a given function
+     *
+     * @method
+     * filter
+     * @param {function} fn
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .filter((line) => {
+     *      return line.length &lt; 10;
+     *  })
+     *  .save();
+     */
     filter(fn) {
         this.transforms.push(filter(fn));
         this.transforms.push(reset());
         return this;
     }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Deletes line by line number
+     *
+     * @method
+     * delete
+     * @param {function} fn
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .delete(10)
+     *  .save(); // delete line 10
+     */
     delete(n) {
         this.transforms.push(deleteLine(n));
         this.transforms.push(reset());
         return this;
     }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Writes any modifications to the file
+     *
+     * @method
+     * save
+     * @param {function} fn
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .set(1, line)
+     *  .filter(fn)
+     *  .map(fn)
+     *  .save();
+     */
     async save() {
         let tmp;
         let source;
@@ -160,6 +290,22 @@ class StreamWriter {
             }
         }
     }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Writes changes to stdout without modifying the source file. Useful for testing changes.
+     *
+     * @method
+     * preview
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .set(1, line)
+     *  .filter(fn)
+     *  .map(fn)
+     *  .preview(); // writes changes to stdout
+     */
     async preview(dest) {
         let source;
         dest = dest || process.stdout;
@@ -253,7 +399,7 @@ exports.StreamWriter = StreamWriter;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Apr 16 2018 17:30:21 GMT+0100 (BST) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Apr 16 2018 17:40:54 GMT+0100 (BST) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
