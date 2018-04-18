@@ -340,7 +340,7 @@ export class StreamWriter implements Writer {
         let count = 0;
         let last;
 
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             source.on('readable', () => {
                 let line;
                 while (null !== (line = source.read())) {
@@ -353,11 +353,16 @@ export class StreamWriter implements Writer {
                 }
             });
 
+            source.on('error', (err) => {
+                reject(err);
+            });
+
             source.on('end', () => {
                 dest.end();
                 if (last === '') { // remove extra blank line
-                    resolve(_(dest).take(count - 1));
+                    return resolve(_(dest).take(count - 1));
                 }
+                resolve(dest);
             });
         });
     }
@@ -366,7 +371,6 @@ export class StreamWriter implements Writer {
         let contents;
         try {
             contents = await this.consume(source);
-
             return new Promise((resolve) => {
                 _(this._prepend)
                     .concat(contents)
