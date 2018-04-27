@@ -264,15 +264,19 @@ export class StreamWriter implements Writer {
             tmp = this.getTempFile();
             dest = fs.createWriteStream(tmp);
 
+            process.setMaxListeners(0);
+            process.on('SIGINT', () => {
+                this.deleteTmp(tmp)
+                process.exit(1);
+            });
+
             await this.modify(source, dest);
             await rename(tmp, this.filename);
 
         } finally {
             dest.destroy();
             source.destroy();
-            if (fs.existsSync(tmp)) {
-                rm(tmp);
-            }
+            this.deleteTmp(tmp);
         }
     }
 
@@ -292,17 +296,22 @@ export class StreamWriter implements Writer {
      *  .map(fn)
      *  .preview(); // writes changes to stdout
      */
-    async preview(dest): Promise<void> {
+    async preview(): Promise<void> {
         let source;
-        dest = dest || process.stdout;
+        const dest = process.stdout;
 
         try {
             source = this.createSourceStream();
             await this.modify(source, dest);
 
         } finally {
-            dest.destroy();
             source.destroy();
+        }
+    }
+
+    private deleteTmp(tmp) {
+        if (fs.existsSync(tmp)) {
+            rm(tmp);
         }
     }
 
@@ -324,10 +333,6 @@ export class StreamWriter implements Writer {
         ]
         this.transforms = [];
         return _.pipeline(...transforms);
-    }
-
-    private getLines() {
-        return _(this._append);
     }
 
     private createSourceStream() {
@@ -369,21 +374,17 @@ export class StreamWriter implements Writer {
 
     private async modify(source, destination) {
         let contents;
-        try {
-            contents = await this.consume(source);
-            return new Promise((resolve) => {
-                _(this._prepend)
-                    .concat(contents)
-                    .pipe(this.createPipeline())
-                    .concat(this.getLines())
-                    .pipe(destination);
+        contents = await this.consume(source);
+        return new Promise((resolve) => {
+            _(this._prepend)
+                .concat(contents)
+                .pipe(this.createPipeline())
+                .concat(_(this._append))
+                .pipe(destination);
 
-                destination.on('finish', () => {
-                    resolve();
-                });
+            destination.on('finish', () => {
+                resolve();
             });
-        } finally {
-            contents.destroy();
-        }
+        });
     }
 }
