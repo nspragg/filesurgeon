@@ -52,9 +52,12 @@
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "tslint-config-airbnb": "^5.3.1",
-    "tslint-eslint-rules": "^4.1.1"
+    "tslint-eslint-rules": "^4.1.1",
+    "tslint-microsoft-contrib": "^5.0.3",
+    "typescript": "^2.6.1"
   },
   "nyc": {
+    "all": true,
     "include": [
       "src/**/*.ts"
     ],
