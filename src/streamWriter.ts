@@ -243,7 +243,6 @@ export class StreamWriter implements Writer {
      *
      * @method
      * save
-     * @param {function} fn
      * @return Writer
      * @example
      * import FileSurgeon from 'FileSurgeon';
@@ -254,30 +253,65 @@ export class StreamWriter implements Writer {
      *  .map(fn)
      *  .save();
      */
-    async save(): Promise<void> {
+    async save(): Promise<any> {
+        let source;
+        let dest;
         let tmp;
+        try {
+            tmp = this.getTempFile();
+
+            process.setMaxListeners(0);
+            process.on('SIGINT', () => {
+                this.deleteTmpFile(tmp);
+                process.exit(1);
+            });
+
+            await this.internalSave(tmp);
+            await rename(tmp, this.filename);
+
+        } finally {
+            this.deleteTmpFile(tmp);
+        }
+    }
+
+    private async internalSave(file): Promise<any> {
         let source;
         let dest;
 
         try {
             source = this.createSourceStream();
-            tmp = this.getTempFile();
-            dest = fs.createWriteStream(tmp);
-
-            process.setMaxListeners(0);
-            process.on('SIGINT', () => {
-                this.deleteTmp(tmp)
-                process.exit(1);
-            });
-
+            dest = fs.createWriteStream(file);
             await this.modify(source, dest);
-            await rename(tmp, this.filename);
 
         } finally {
-            dest.destroy();
-            source.destroy();
-            this.deleteTmp(tmp);
+            return new Promise((resolve, reject) => {
+                dest.on('close', resolve);
+                dest.on('error', reject);
+                dest.destroy();
+                source.destroy();
+            });
         }
+    }
+
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Writes any modifications to a given file
+     *
+     * @method
+     * saveAs
+     * @param {string} filename
+     * @return Writer
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .set(1, line)
+     *  .filter(fn)
+     *  .map(fn)
+     *  .saveAs('myFile');
+     */
+    async saveAs(file): Promise<any> {
+        return this.internalSave(file);
     }
 
     // tslint:disable-next-line:valid-jsdoc
@@ -309,7 +343,7 @@ export class StreamWriter implements Writer {
         }
     }
 
-    private deleteTmp(tmp) {
+    private deleteTmpFile(tmp) {
         if (fs.existsSync(tmp)) {
             rm(tmp);
         }

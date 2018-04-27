@@ -53,7 +53,9 @@ export default class FileSurgeon {
             .collect()
             .toPromise(Promise);
 
-        if (arr[arr.length - 1].toString() === '') { // remove extra blank line
+        source.destroy();
+
+        if (arr.length > 0 && arr[arr.length - 1].toString() === '') { // remove extra blank line
             arr.pop();
         }
         return arr.map(buffer => buffer.toString())

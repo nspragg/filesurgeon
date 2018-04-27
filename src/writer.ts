@@ -7,5 +7,6 @@ export interface Writer {
     filter(fn: (string) => boolean): Writer
     map(fn: (string) => string): Writer
     delete(n: number): Writer
-    save(): void
+    save(file?): void
+    saveAs(file): void
 }

@@ -291,6 +291,34 @@ describe('Stream', () => {
     });
   });
 
+  describe('.saveAs', () => {
+    let file;
+    let dest;
+    beforeEach(() => {
+      const source = getAbsolutePath('input.txt');
+      file = getAbsolutePath(fixture + '_tmp');
+      dest = getAbsolutePath('save-as-tmp');
+      copy(source, file)
+    });
+
+    afterEach(() => {
+      deleteFile(file);
+      deleteFile(dest);
+    });
+
+    it('saves changes to a specified file', async () => {
+
+      await FileSurgeon.create(file)
+        .edit()
+        .replace('TWO', '2')
+        .saveAs(dest);
+
+      const arr = await FileSurgeon.asArray(dest);
+      const expected = await FileSurgeon.asArray(getAbsolutePath('replace.txt'));
+      assert.deepEqual(arr, expected);
+    });
+  });
+
   describe('.delete', () => {
     let file;
     beforeEach(() => {
