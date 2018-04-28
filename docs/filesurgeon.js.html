@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.edit">edit</a></li></ul></li><li><a href="StreamWriter.html">StreamWriter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#saveAs">saveAs</a></li><li><a href="global.html#set">set</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.concat">concat</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.edit">edit</a></li></ul></li><li><a href="StreamWriter.html">StreamWriter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#saveAs">saveAs</a></li><li><a href="global.html#set">set</a></li></ul>
 </nav>
 
 <div id="main">
@@ -40,6 +40,14 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
+var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require("highland");
 const fs = require("fs");
@@ -51,6 +59,28 @@ const readFileAsync = util_1.promisify(fs.readFile);
 class FileSurgeon {
     constructor(filename) {
         this.filename = filename;
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Static factory method to an array of concatenated file contents
+     *
+     * @static
+     * @memberOf FileSurgeon
+     * @method
+     * concat
+     * @return FileSurgeon Promise&lt;string>
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.concat(file1, file2);
+     * console.log(contents);
+     */
+    static concat(filename1, filename2) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const f1 = yield FileSurgeon.asArray(filename1);
+            const f2 = yield FileSurgeon.asArray(filename2);
+            return f1.concat(f2);
+        });
     }
     // tslint:disable-next-line:valid-jsdoc
     /**
@@ -83,16 +113,18 @@ class FileSurgeon {
      *
      * const contents = FileSurgeon.asArray(file);
      */
-    static async asArray(filename) {
-        const source = lineStream_1.createStream(filename);
-        const arr = await _(source)
-            .collect()
-            .toPromise(Promise);
-        source.destroy();
-        if (arr.length > 0 &amp;&amp; arr[arr.length - 1].toString() === '') { // remove extra blank line
-            arr.pop();
-        }
-        return arr.map(buffer => buffer.toString());
+    static asArray(filename) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const source = lineStream_1.createStream(filename);
+            const arr = yield _(source)
+                .collect()
+                .toPromise(Promise);
+            source.destroy();
+            if (arr.length > 0 &amp;&amp; arr[arr.length - 1].toString() === '') { // remove extra blank line
+                arr.pop();
+            }
+            return arr.map(buffer => buffer.toString());
+        });
     }
     // tslint:disable-next-line:valid-jsdoc
     /**
@@ -143,7 +175,7 @@ exports.default = FileSurgeon;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 27 2018 12:39:15 GMT+0100 (BST) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Apr 28 2018 12:05:54 GMT+0100 (BST) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

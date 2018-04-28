@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.edit">edit</a></li></ul></li><li><a href="StreamWriter.html">StreamWriter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#saveAs">saveAs</a></li><li><a href="global.html#set">set</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.concat">concat</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.edit">edit</a></li></ul></li><li><a href="StreamWriter.html">StreamWriter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#saveAs">saveAs</a></li><li><a href="global.html#set">set</a></li></ul>
 </nav>
 
 <div id="main">
@@ -102,7 +102,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line10">line 10</a>
+        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -202,7 +202,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line32">line 32</a>
+        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line62">line 62</a>
     </li></ul></dd>
     
 
@@ -301,7 +301,7 @@ const contents = FileSurgeon.asArray(file);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line15">line 15</a>
+        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line45">line 45</a>
     </li></ul></dd>
     
 
@@ -341,6 +341,106 @@ const contents = FileSurgeon.asArray(file);</code></pre>
     <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
 
 const contents = FileSurgeon.asString(file);</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".concat"><span class="type-signature">(static) </span>concat<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Static factory method to an array of concatenated file contents</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line23">line 23</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>FileSurgeon Promise<string></p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.concat(file1, file2);
+console.log(contents);</code></pre>
 
 
 
@@ -400,7 +500,7 @@ const contents = FileSurgeon.asString(file);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line57">line 57</a>
+        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line89">line 89</a>
     </li></ul></dd>
     
 
@@ -548,7 +648,7 @@ const surgeon = FileSurgeon.create(file);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line74">line 74</a>
+        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -609,7 +709,7 @@ const contents = FileSurgeon.edit(filename);</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 27 2018 12:39:15 GMT+0100 (BST) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Apr 28 2018 12:05:54 GMT+0100 (BST) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
