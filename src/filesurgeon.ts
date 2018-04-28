@@ -17,6 +17,27 @@ export default class FileSurgeon {
 
     // tslint:disable-next-line:valid-jsdoc
     /**
+     * Static factory method to an array of concatenated file contents
+     *
+     * @static
+     * @memberOf FileSurgeon
+     * @method
+     * concat
+     * @return FileSurgeon Promise<string>
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.concat(file1, file2);
+     * console.log(contents);
+     */
+    static async concat(filename1: string, filename2: string): Promise<Array<any>> {
+        const f1 = await FileSurgeon.asArray(filename1);
+        const f2 = await FileSurgeon.asArray(filename2);
+        return f1.concat(f2);
+    }
+
+    // tslint:disable-next-line:valid-jsdoc
+    /**
      * Static factory method to read the contents of a file as a string
      *
      * @static

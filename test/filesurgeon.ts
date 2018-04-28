@@ -23,4 +23,18 @@ describe('FileSurgeon', () => {
       assert.deepEqual(arr, ['this is line 1', 'this is line 2']);
     });
   });
+
+  describe('.concat', () => {
+    it('returns concatenated file contents', async () => {
+      const arr = await FileSurgeon.concat(
+        getAbsolutePath('small.txt'),
+        getAbsolutePath('small.txt'));
+
+      assert.deepEqual(arr, [
+        'this is line 1',
+        'this is line 2',
+        'this is line 1',
+        'this is line 2']);
+    });
+  });
 });
