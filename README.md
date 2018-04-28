@@ -23,10 +23,15 @@ const Filesurgeon = require("filesurgeon");
 
 await Filesurgeon.create('/tmp/somefile.txt')
   .edit()
-  .set(1, 'line 1')
-  .map((line) => {
-    return line.toLowerCase();
+  .set(1, 'first')
+  .filter((line) => {
+    return /^[a-d]/.test(line);
   })
+  .replace('old', 'new')
+  .map((line) => {
+    return line.trim();
+  })
+  .append('last')
   .save(); // commit to file
 ```
 
