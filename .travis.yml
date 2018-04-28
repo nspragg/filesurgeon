@@ -5,5 +5,3 @@ node_js:
   - "8"
 after_script:
   - npm run coverage
-  - cat coverage/lcov.info | node_modules/.bin/coveralls
-  - nyc npm test && nyc report --reporter=text-lcov | node_modules/.bin/coveralls
