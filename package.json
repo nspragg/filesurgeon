@@ -12,7 +12,7 @@
     "watch": "tsc --watch",
     "prepublish": "npm run build",
     "prepublishOnly": "tsc -p ./ --outDir dist",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+     "coverage": "nyc mocha && nyc report --reporter=html && nyc report --reporter=json-summary",
     "test": "mocha -r ts-node/register test/*.ts"
   },
   "repository": {
@@ -46,7 +46,6 @@
     "@types/node": "^8.0.33",
     "@types/typescript": "^2.0.0",
     "chai": "^4.1.2",
-    "coveralls": "^3.0.2",
     "file-js": "^0.3.0",
     "istanbul": "1.1.0-alpha.1",
     "jsdoc": "^3.4.3",
