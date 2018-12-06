@@ -4,16 +4,18 @@
   "description": "Manipulate files the easy way",
   "main": "index.js",
   "scripts": {
-    "lint": "tslint --project tsconfig.json",
-    "build": "npm run clean && tsc",
     "jsdoc": "jsdoc -c ./docconfig/jsdoc.json",
-    "clean": "rm -fr dist/*",
-    "pretest": "npm run build",
+    "build": "npm run clean && tsc",
     "watch": "tsc --watch",
+    "clean": "rm -fr dist/*",
     "prepublish": "npm run build",
     "prepublishOnly": "tsc -p ./ --outDir dist",
-     "coverage": "nyc mocha && nyc report --reporter=html && nyc report --reporter=json-summary",
-    "test": "mocha -r ts-node/register test/*.ts"
+    "pretest": "npm run build",
+    "test": "mocha",
+    "posttest": "npm run lint",
+    "lint": "tslint --project tsconfig.lint.json --format stylish",
+    "lint:fix": "tslint --project tsconfig.lint.json --format stylish --fix",
+    "coverage": "nyc mocha && nyc report --reporter=html && nyc report --reporter=json-summary"
   },
   "repository": {
     "type": "git",
@@ -60,9 +62,8 @@
     "typescript": "^2.6.1"
   },
   "nyc": {
-    "all": true,
     "include": [
-      "src/**/*.ts"
+      "src/*.ts"
     ],
     "extension": [
       ".ts"
