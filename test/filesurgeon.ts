@@ -1,13 +1,6 @@
 import { assert } from 'chai';
-import * as sinon from 'sinon';
-import * as File from 'file-js';
-
-import { copy, getAbsolutePath, deleteFile } from './utils';
-
-import { Writer } from '../src/writer';
+import { getAbsolutePath } from './utils';
 import * as FileSurgeon from '../index';
-
-const sandbox = sinon.sandbox.create();
 
 describe('FileSurgeon', () => {
   describe('.asString', () => {

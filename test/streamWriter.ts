@@ -1,13 +1,9 @@
 import { assert } from 'chai';
 import * as path from 'path';
 import * as FileSurgeon from '../index';
-import * as sinon from 'sinon';
 import * as File from 'file-js';
 import { copy, getAbsolutePath, deleteFile } from './utils';
-import * as fs from 'fs';
-import { resolve } from 'dns';
 
-const sandbox = sinon.sandbox.create();
 const fixture = 'input.txt';
 
 describe('Stream', () => {
@@ -16,7 +12,7 @@ describe('Stream', () => {
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
       file = getAbsolutePath(fixture + '_tmp');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {
@@ -43,7 +39,7 @@ describe('Stream', () => {
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
       file = getAbsolutePath(fixture + '_tmp1');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {
@@ -69,7 +65,7 @@ describe('Stream', () => {
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
       file = getAbsolutePath(fixture + '_tmp');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {
@@ -105,7 +101,7 @@ describe('Stream', () => {
     beforeEach(() => {
       const source = getAbsolutePath('small.txt');
       file = getAbsolutePath(fixture + '_tmp');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {
@@ -147,7 +143,7 @@ describe('Stream', () => {
     beforeEach(() => {
       const source = getAbsolutePath('input.txt');
       file = getAbsolutePath(fixture + '_tmp');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {
@@ -189,7 +185,7 @@ describe('Stream', () => {
     beforeEach(() => {
       source = getAbsolutePath('input.txt');
       file = getAbsolutePath(fixture + '_tmp');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {
@@ -236,7 +232,7 @@ describe('Stream', () => {
     beforeEach(() => {
       const source = getAbsolutePath('input.txt');
       file = getAbsolutePath(fixture + '_tmp');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {
@@ -253,7 +249,7 @@ describe('Stream', () => {
           return line.toLowerCase();
         })
         .filter((line) => {
-          return !/CAPITAL/i.test(line)
+          return !/CAPITAL/i.test(line);
         })
         .save();
 
@@ -268,7 +264,7 @@ describe('Stream', () => {
     beforeEach(() => {
       const source = getAbsolutePath('input.txt');
       file = getAbsolutePath(fixture + '_tmp');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {
@@ -279,13 +275,13 @@ describe('Stream', () => {
       try {
         await FileSurgeon.create(file)
           .edit()
-          .filter((line) => {
+          .filter(() => {
             throw new Error('bad news');
           })
           .save();
       } catch (err) {
         const count = File.create(path.join(__dirname + '/fixtures/'))
-          .getFilesSync('tmp_*')
+          .getFilesSync('tmp_*');
         assert.equal(count.length, 0, 'temp files remaining');
       }
     });
@@ -298,7 +294,7 @@ describe('Stream', () => {
       const source = getAbsolutePath('input.txt');
       file = getAbsolutePath(fixture + '_tmp');
       dest = getAbsolutePath('save-as-tmp');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {
@@ -324,7 +320,7 @@ describe('Stream', () => {
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
       file = getAbsolutePath(fixture + '_tmp');
-      copy(source, file)
+      copy(source, file);
     });
 
     afterEach(() => {

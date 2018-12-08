@@ -1,8 +1,7 @@
 {
   "extends": [
     "tslint-eslint-rules",
-    "tslint-config-airbnb",
-    "eslint-config-iplayer-base"
+    "tslint-config-airbnb"
   ],
   "parserOptions": {
     "ecmaVersion": 2017
