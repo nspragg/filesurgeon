@@ -104,7 +104,6 @@ export default class FileSurgeon {
     /**
      * Returns an instance of Writer to modify file contents
      *
-     * @static
      * @memberOf FileSurgeon
      * @method
      * edit
@@ -113,7 +112,7 @@ export default class FileSurgeon {
      * @example
      * import FileSurgeon from 'FileSurgeon';
      *
-     * const contents = FileSurgeon.edit(filename);
+     * const contents = FileSurgeon.create(filename).edit();
      */
     edit(): Writer {
         return new StreamWriter(this.filename)
