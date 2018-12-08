@@ -92,7 +92,7 @@ FileSurgeon.create("myFile")
   .save();
 ```
 
-### delete lines
+### Delete lines
 
 delete lines 1 and 10:
 
@@ -104,4 +104,35 @@ FileSurgeon.create("myFile")
   .delete(1)
   .delete(10)
   .save();
+```
+
+### Concatenate files
+
+concatenates contents of `file1` and `file2`
+
+```js
+const FileSurgeon = require("filesurgeon");
+
+const contents = FileSurgeon.concat(file1, file2);
+console.log(contents);
+```
+
+### Consuming file contents
+
+read `file` as a string
+
+```js
+const FileSurgeon = require("filesurgeon");
+
+const contents = FileSurgeon.asString(file);
+console.log(contents);
+```
+
+read `file` as an array
+
+```js
+const FileSurgeon = require("filesurgeon");
+
+const contents = FileSurgeon.asArray(file);
+console.log(contents);
 ```
