@@ -16,23 +16,56 @@ npm install --save filesurgeon
 
 ## Usage
 
-The example below performs multiple operations on a file:
+```js
+const Filesurgeon = require("filesurgeon");
 
+await Filesurgeon.create('/tmp/somefile.txt')
+  .edit()
+  .replace('old', 'new')
+  .save();
+```
+
+Examples: 
+
+Set lines in a file:
 ```js
 const Filesurgeon = require("filesurgeon");
 
 await Filesurgeon.create('/tmp/somefile.txt')
   .edit()
   .set(1, 'first')
+  .set(2, 'second')
+  .set(3, 'third')
+  .save();
+```
+
+Transforms lines:
+```js
+const Filesurgeon = require("filesurgeon");
+
+await Filesurgeon.create('/tmp/somefile.txt')
+  .edit()
+  .map((line) => line.trim())
+  .map((line) => line.toLowerCase())
+  .save();
+```
+
+Filter lines:
+```js
+await Filesurgeon.create('/tmp/somefile.txt')
+  .edit()
   .filter((line) => {
     return /^[a-d]/.test(line);
   })
-  .replace('old', 'new')
-  .map((line) => {
-    return line.trim();
-  })
-  .append('last')
-  .save(); // commit to file
+  .save();
+```
+Consume files:
+
+```js
+const Filesurgeon = require("filesurgeon");
+
+const contents =  await Filesurgeon.asArray('/tmp/somefile.txt');
+console.log(contents);
 ```
 
 ## Documentation
