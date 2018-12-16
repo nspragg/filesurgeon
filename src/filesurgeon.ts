@@ -1,7 +1,7 @@
 import * as  _ from 'highland';
 import * as fs from 'fs';
 import { promisify } from 'util';
-import { StreamWriter } from './streamWriter';
+import { StreamEditor } from './streamEditor';
 import { Writer } from './writer';
 import { createStream } from './lineStream';
 
@@ -99,14 +99,14 @@ export default class FileSurgeon {
    * @memberOf FileSurgeon
    * @method
    * create
-   * @return StreamWriter
+   * @return StreamEditor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
    * const surgeon = FileSurgeon.edit(file);
    */
-  static edit(filename: string): StreamWriter {
-    return new StreamWriter(filename);
+  static edit(filename: string): StreamEditor {
+    return new StreamEditor(filename);
   }
 
   // tslint:disable-next-line:valid-jsdoc
@@ -114,6 +114,6 @@ export default class FileSurgeon {
    * @deprecated since version 1.2.0
    */
   edit(): Writer {
-    return new StreamWriter(this.filename);
+    return new StreamEditor(this.filename);
   }
 }
