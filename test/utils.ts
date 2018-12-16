@@ -29,3 +29,7 @@ export function copy(source, destination): void {
   fs.closeSync(fdr);
   fs.closeSync(fdw);
 }
+
+export function touchSync(filename) {
+  fs.closeSync(fs.openSync(filename, 'w'));
+}

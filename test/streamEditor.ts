@@ -2,11 +2,11 @@ import { assert } from 'chai';
 import * as path from 'path';
 import * as FileSurgeon from '../index';
 import * as File from 'file-js';
-import { copy, getAbsolutePath, deleteFile } from './utils';
+import { copy, getAbsolutePath, deleteFile, touchSync } from './utils';
 
 const fixture = 'input.txt';
 
-describe('Stream', () => {
+describe('StreamEditor', () => {
   describe('.prepend', () => {
     let file;
     beforeEach(() => {
@@ -49,14 +49,18 @@ describe('Stream', () => {
 
   describe('.append', () => {
     let file;
+    let emptyFile;
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
       file = getAbsolutePath(fixture + '_tmp1');
+      emptyFile = getAbsolutePath('_empty_tmp');
       copy(source, file);
+      touchSync(emptyFile);
     });
 
     afterEach(() => {
       deleteFile(file);
+      deleteFile(emptyFile);
     });
 
     it('appends a line at the end of the file', async () => {
@@ -70,18 +74,49 @@ describe('Stream', () => {
       const expected = await FileSurgeon.asArray(getAbsolutePath('append.txt'));
       assert.deepEqual(arr, expected);
     });
+
+    it('appends to an empty file', async () => {
+      await FileSurgeon.edit(file)
+        .append('appended line1')
+        .append('appended line2')
+        .append('appended line3')
+        .save();
+
+      const arr = await FileSurgeon.asArray(file);
+      const expected = await FileSurgeon.asArray(getAbsolutePath('append.txt'));
+      assert.deepEqual(arr, expected);
+    });
+
+    it('appends to an empty file', async () => {
+      await FileSurgeon.edit(emptyFile)
+        .append('appended line1')
+        .append('appended line2')
+        .append('appended line3')
+        .save();
+
+      const arr = await FileSurgeon.asArray(emptyFile);
+      assert.deepEqual(arr, [
+        'appended line1',
+        'appended line2',
+        'appended line3'
+      ]);
+    });
   });
 
   describe('.set', () => {
     let file;
+    let emptyFile;
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
       file = getAbsolutePath(fixture + '_tmp');
+      emptyFile = getAbsolutePath('_empty_tmp');
       copy(source, file);
+      touchSync(emptyFile);
     });
 
     afterEach(() => {
       deleteFile(file);
+      deleteFile(emptyFile);
     });
 
     it('over writes an existing lines', async () => {
@@ -103,6 +138,15 @@ describe('Stream', () => {
       const arr = await FileSurgeon.asArray(file);
       const expected = await FileSurgeon.asArray(getAbsolutePath('multi-set.txt'));
       assert.deepEqual(arr, expected);
+    });
+
+    it('does not set lines for empty', async () => {
+      await FileSurgeon.edit(emptyFile)
+        .set(1, 'NEW1')
+        .save();
+
+      const arr = await FileSurgeon.asArray(emptyFile);
+      assert.deepEqual(arr, []);
     });
   });
 

@@ -370,7 +370,7 @@ export class StreamEditor implements Editor {
   }
 
   private consume(source): Promise<any> {
-    const dest = _();
+    let dest = _();
     let count = 0;
     let last;
 
@@ -396,21 +396,31 @@ export class StreamEditor implements Editor {
       source.on('end', () => {
         dest.end();
         if (last === '') { // remove extra blank line
-          return resolve(_(dest).take(count - 1));
+          dest = _(dest).take(count - 1);
         }
-        resolve(dest);
+        resolve({
+          contents: dest,
+          length: count
+        });
       });
     });
   }
 
   private async modify(source, destination) {
-    const contents = await this.consume(source);
+    const { contents, length } = await this.consume(source);
     return new Promise((resolve) => {
-      _(this._prepend)
-        .concat(contents)
-        .pipe(this.createPipeline())
-        .concat(_(this._append))
-        .pipe(destination);
+      if (length > 0) {
+        _(this._prepend)
+          .concat(contents)
+          .pipe(this.createPipeline())
+          .concat(_(this._append))
+          .pipe(destination);
+      } else if (this._append.length > 0 || this._prepend.length > 0) {
+        _(this._prepend.concat(this._append))
+          .pipe(destination);
+      } else {
+        resolve();
+      }
 
       destination.on('finish', () => {
         resolve();
