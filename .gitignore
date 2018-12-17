@@ -4,3 +4,4 @@ coverage
 dist/
 .vscode
 .nyc_output
+package-lock.json
