@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.concat">concat</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.edit">edit</a></li></ul></li><li><a href="StreamWriter.html">StreamWriter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#saveAs">saveAs</a></li><li><a href="global.html#set">set</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.concat">concat</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#edit">edit</a></li></ul></li><li><a href="StreamEditor.html">StreamEditor</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#saveAs">saveAs</a></li><li><a href="global.html#set">set</a></li></ul>
 </nav>
 
 <div id="main">
@@ -455,6 +455,86 @@ console.log(contents);</code></pre>
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <dt class="important tag-deprecated">Deprecated:</dt><dd><ul class="dummy"><li>since version 1.2.0</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line93">line 93</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
 <div class="description">
     <p>Static factory method to an instance of FileSurgeon</p>
 </div>
@@ -500,7 +580,7 @@ console.log(contents);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line90">line 90</a>
+        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -527,7 +607,7 @@ console.log(contents);</code></pre>
 
         
 <div class="param-desc">
-    <p>FileSurgeon</p>
+    <p>StreamEditor</p>
 </div>
 
 
@@ -539,7 +619,7 @@ console.log(contents);</code></pre>
     
     <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
 
-const surgeon = FileSurgeon.create(file);</code></pre>
+const surgeon = FileSurgeon.edit(file);</code></pre>
 
 
 
@@ -548,71 +628,18 @@ const surgeon = FileSurgeon.create(file);</code></pre>
 
     
 
-    <h4 class="name" id=".edit"><span class="type-signature">(static) </span>edit<span class="signature">(filename)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="edit"><span class="type-signature"></span>edit<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
 
-<div class="description">
-    <p>Returns an instance of Writer to modify file contents</p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>filename</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -636,6 +663,8 @@ const surgeon = FileSurgeon.create(file);</code></pre>
     
 
     
+        <dt class="important tag-deprecated">Deprecated:</dt><dd><ul class="dummy"><li>since version 1.2.0</li></ul></dd>
+    
 
     
 
@@ -648,7 +677,7 @@ const surgeon = FileSurgeon.create(file);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line107">line 107</a>
+        <a href="filesurgeon.js.html">filesurgeon.js</a>, <a href="filesurgeon.js.html#line117">line 117</a>
     </li></ul></dd>
     
 
@@ -671,23 +700,6 @@ const surgeon = FileSurgeon.create(file);</code></pre>
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Writer</p>
-</div>
-
-
-
-    
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
-
-const contents = FileSurgeon.create(filename).edit();</code></pre>
 
 
 
@@ -709,7 +721,7 @@ const contents = FileSurgeon.create(filename).edit();</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Dec 08 2018 11:43:22 GMT+0000 (GMT) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 17 2018 12:50:38 GMT+0000 (GMT) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

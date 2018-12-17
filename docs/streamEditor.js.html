@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>streamEditor.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.concat">concat</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#edit">edit</a></li></ul></li><li><a href="StreamEditor.html">StreamEditor</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#saveAs">saveAs</a></li><li><a href="global.html#set">set</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">streamEditor.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const path = require("path");
+const _ = require("highland");
+const fs = require("fs");
+const util_1 = require("util");
+const lineStream_1 = require("./lineStream");
+const bind_1 = require("./bind");
+const rename = util_1.promisify(fs.rename);
+const rm = util_1.promisify(fs.unlink);
+function toLine(obj) {
+    return obj.data + '\n';
+}
+function toObject() {
+    let count = 0;
+    return (line) => {
+        return {
+            data: line.toString(),
+            // tslint:disable-next-line:no-increment-decrement
+            num: ++count
+        };
+    };
+}
+function reset() {
+    let count = 0;
+    return _.map((line) => {
+        // tslint:disable-next-line:no-increment-decrement
+        line.num = ++count;
+        return line;
+    });
+}
+function setline(lineNumber, to) {
+    return _.map((line) => {
+        if (line.num === lineNumber) {
+            line.data = to;
+        }
+        return line;
+    });
+}
+function map(fn) {
+    return _.map((line) => {
+        line.data = fn(line.data);
+        return line;
+    });
+}
+function filter(fn) {
+    return _.filter((line) => {
+        return fn(line.data);
+    });
+}
+function deleteLine(n) {
+    return _.filter((line) => {
+        return line.num !== n;
+    });
+}
+function replace(from, to) {
+    return _.map((line) => {
+        line.data = line.data.replace(from, to);
+        return line;
+    });
+}
+/** @class */
+/** @implements {Editor} */
+class StreamEditor {
+    constructor(filename, encoding = 'utf8') {
+        this.filename = filename;
+        this._prepend = [];
+        this._append = [];
+        this.transforms = [];
+        bind_1.default(this);
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * sets a `line` at a given line number `N`
+     *
+     * @method
+     * set
+     * @param {string} line
+     * @param {number} n
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .set(1, line)
+     *  .set(10, anotherline)
+     *  .save();
+     */
+    set(i, line) {
+        this.transforms.push(setline(i, line));
+        return this;
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Prepends a given `line` to a file
+     *
+     * @method
+     * prepend
+     * @param {string} line
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .prepend(line)
+     *  .save();
+     */
+    prepend(line) {
+        this._prepend.push(line);
+        return this;
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Appends a given `line` to a file
+     *
+     * @method
+     * append
+     * @param {string} line
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .append(line)
+     *  .save();
+     */
+    append(line) {
+        this._append.push(`${line}\n`);
+        return this;
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * replaces a given string or regex for every line
+     *
+     * @method
+     * replace
+     * @param {string|RegExp} source
+     * @param {string} replacement
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .replace('x', 'y')
+     *  .replace(/x/, 'y')
+     *  .save();
+     */
+    replace(x, y) {
+        this.transforms.push(replace(x, y));
+        return this;
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Maps each line using a given function
+     *
+     * @method
+     * map
+     * @param {function} fn
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .map((line) => {
+     *      return line.toLowerCase() &lt; 10;
+     *  })
+     *  .save();
+     */
+    map(fn) {
+        this.transforms.push(map(fn));
+        return this;
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Filters the file contents using a given function
+     *
+     * @method
+     * filter
+     * @param {function} fn
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .filter((line) => {
+     *      return line.length &lt; 10;
+     *  })
+     *  .save();
+     */
+    filter(fn) {
+        this.transforms.push(filter(fn));
+        this.transforms.push(reset());
+        return this;
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Deletes line by line number
+     *
+     * @method
+     * delete
+     * @param {function} fn
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .delete(10)
+     *  .save(); // delete line 10
+     */
+    delete(n) {
+        this.transforms.push(deleteLine(n));
+        this.transforms.push(reset());
+        return this;
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Writes any modifications to the file
+     *
+     * @method
+     * save
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .set(1, line)
+     *  .filter(fn)
+     *  .map(fn)
+     *  .save();
+     */
+    save() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let tmp;
+            try {
+                tmp = this.getTempFile();
+                process.setMaxListeners(0);
+                process.on('SIGINT', () => {
+                    this.deleteTmpFile(tmp);
+                    process.exit(1);
+                });
+                yield this.internalSave(tmp);
+                yield rename(tmp, this.filename);
+            }
+            finally {
+                this.deleteTmpFile(tmp);
+            }
+        });
+    }
+    internalSave(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let source;
+            let dest;
+            try {
+                source = this.createSourceStream();
+                dest = fs.createWriteStream(file);
+                yield this.modify(source, dest);
+            }
+            finally {
+                return new Promise((resolve, reject) => {
+                    dest.on('close', resolve);
+                    dest.on('error', reject);
+                    dest.destroy();
+                    source.destroy();
+                });
+            }
+        });
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Writes any modifications to a given file
+     *
+     * @method
+     * saveAs
+     * @param {string} filename
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .set(1, line)
+     *  .filter(fn)
+     *  .map(fn)
+     *  .saveAs('myFile');
+     */
+    saveAs(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.internalSave(file);
+        });
+    }
+    // tslint:disable-next-line:valid-jsdoc
+    /**
+     * Writes changes to stdout without modifying the source file. Useful for testing changes.
+     *
+     * @method
+     * preview
+     * @return Editor
+     * @example
+     * import FileSurgeon from 'FileSurgeon';
+     *
+     * const contents = FileSurgeon.edit(filename)
+     *  .set(1, line)
+     *  .filter(fn)
+     *  .map(fn)
+     *  .preview(); // writes changes to stdout
+     */
+    preview() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let source;
+            const dest = process.stdout;
+            try {
+                source = this.createSourceStream();
+                yield this.modify(source, dest);
+            }
+            finally {
+                source.destroy();
+            }
+        });
+    }
+    deleteTmpFile(tmp) {
+        if (fs.existsSync(tmp)) {
+            rm(tmp);
+        }
+    }
+    getTempFile() {
+        const name = 'tmp_' +
+            process.pid + '_' +
+            Math.random()
+                .toString(36)
+                .substring(5);
+        return path.join(path.dirname(this.filename), name);
+    }
+    createPipeline() {
+        const transforms = [
+            _.map(toObject()),
+            ...this.transforms,
+            _.map(toLine)
+        ];
+        this.transforms = [];
+        return _.pipeline(...transforms);
+    }
+    createSourceStream() {
+        const source = lineStream_1.createStream(this.filename);
+        return source;
+    }
+    consume(source) {
+        let dest = _();
+        let count = 0;
+        let last;
+        return new Promise((resolve, reject) => {
+            source.on('readable', () => {
+                let line;
+                // tslint:disable-next-line:no-conditional-assignment
+                while (null !== (line = source.read())) {
+                    if (line instanceof Buffer) {
+                        line = line.toString('utf8');
+                    }
+                    last = line;
+                    // tslint:disable-next-line:no-increment-decrement
+                    count++;
+                    dest.write(line);
+                }
+            });
+            source.on('error', (err) => {
+                reject(err);
+            });
+            source.on('end', () => {
+                dest.end();
+                if (last === '') { // remove extra blank line
+                    dest = _(dest).take(count - 1);
+                }
+                resolve({
+                    contents: dest,
+                    length: count
+                });
+            });
+        });
+    }
+    modify(source, destination) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { contents, length } = yield this.consume(source);
+            return new Promise((resolve) => {
+                if (length > 0) {
+                    _(this._prepend)
+                        .concat(contents)
+                        .pipe(this.createPipeline())
+                        .concat(_(this._append))
+                        .pipe(destination);
+                }
+                else if (this._append.length > 0 || this._prepend.length > 0) {
+                    _(this._prepend.concat(this._append))
+                        .pipe(destination);
+                }
+                else {
+                    resolve();
+                }
+                destination.on('finish', () => {
+                    resolve();
+                });
+            });
+        });
+    }
+}
+exports.StreamEditor = StreamEditor;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 17 2018 12:50:38 GMT+0000 (GMT) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
