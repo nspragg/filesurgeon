@@ -1,10 +1,10 @@
 import * as path from 'path';
 import * as  _ from 'highland';
 import * as fs from 'fs';
-import { Writer } from './writer';
 import { promisify } from 'util';
 import { createStream } from './lineStream';
 import bind from './bind';
+import { Editor } from './editor';
 
 const rename = promisify(fs.rename);
 const rm = promisify(fs.unlink);
@@ -69,8 +69,8 @@ function replace(from, to) {
 }
 
 /** @class */
-/** @implements {Writer} */
-export class StreamWriter implements Writer {
+/** @implements {Editor} */
+export class StreamEditor implements Editor {
   private filename: string;
   private _prepend: string[];
   private _append: string[];
@@ -92,7 +92,7 @@ export class StreamWriter implements Writer {
    * set
    * @param {string} line
    * @param {number} n
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -101,7 +101,7 @@ export class StreamWriter implements Writer {
    *  .set(10, anotherline)
    *  .save();
    */
-  set(i: number, line: string): Writer {
+  set(i: number, line: string): Editor {
     this.transforms.push(setline(i, line));
     return this;
   }
@@ -113,7 +113,7 @@ export class StreamWriter implements Writer {
    * @method
    * prepend
    * @param {string} line
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -121,7 +121,7 @@ export class StreamWriter implements Writer {
    *  .prepend(line)
    *  .save();
    */
-  prepend(line: string): Writer {
+  prepend(line: string): Editor {
     this._prepend.push(line);
     return this;
   }
@@ -133,7 +133,7 @@ export class StreamWriter implements Writer {
    * @method
    * append
    * @param {string} line
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -141,7 +141,7 @@ export class StreamWriter implements Writer {
    *  .append(line)
    *  .save();
    */
-  append(line: string): Writer {
+  append(line: string): Editor {
     this._append.push(`${line}\n`);
     return this;
   }
@@ -154,7 +154,7 @@ export class StreamWriter implements Writer {
    * replace
    * @param {string|RegExp} source
    * @param {string} replacement
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -163,7 +163,7 @@ export class StreamWriter implements Writer {
    *  .replace(/x/, 'y')
    *  .save();
    */
-  replace(x: string, y: string): Writer {
+  replace(x: string, y: string): Editor {
     this.transforms.push(replace(x, y));
     return this;
   }
@@ -175,7 +175,7 @@ export class StreamWriter implements Writer {
    * @method
    * map
    * @param {function} fn
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -185,7 +185,7 @@ export class StreamWriter implements Writer {
    *  })
    *  .save();
    */
-  map(fn: (str: any) => string): Writer {
+  map(fn: (str: any) => string): Editor {
     this.transforms.push(map(fn));
     return this;
   }
@@ -197,7 +197,7 @@ export class StreamWriter implements Writer {
    * @method
    * filter
    * @param {function} fn
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -207,7 +207,7 @@ export class StreamWriter implements Writer {
    *  })
    *  .save();
    */
-  filter(fn: (str: any) => boolean): Writer {
+  filter(fn: (str: any) => boolean): Editor {
     this.transforms.push(filter(fn));
     this.transforms.push(reset());
     return this;
@@ -220,7 +220,7 @@ export class StreamWriter implements Writer {
    * @method
    * delete
    * @param {function} fn
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -228,7 +228,7 @@ export class StreamWriter implements Writer {
    *  .delete(10)
    *  .save(); // delete line 10
    */
-  delete(n: number): Writer {
+  delete(n: number): Editor {
     this.transforms.push(deleteLine(n));
     this.transforms.push(reset());
     return this;
@@ -240,7 +240,7 @@ export class StreamWriter implements Writer {
    *
    * @method
    * save
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -295,7 +295,7 @@ export class StreamWriter implements Writer {
    * @method
    * saveAs
    * @param {string} filename
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -315,7 +315,7 @@ export class StreamWriter implements Writer {
    *
    * @method
    * preview
-   * @return Writer
+   * @return Editor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
@@ -370,7 +370,7 @@ export class StreamWriter implements Writer {
   }
 
   private consume(source): Promise<any> {
-    const dest = _();
+    let dest = _();
     let count = 0;
     let last;
 
@@ -396,22 +396,31 @@ export class StreamWriter implements Writer {
       source.on('end', () => {
         dest.end();
         if (last === '') { // remove extra blank line
-          return resolve(_(dest).take(count - 1));
+          dest = _(dest).take(count - 1);
         }
-        resolve(dest);
+        resolve({
+          contents: dest,
+          length: count
+        });
       });
     });
   }
 
   private async modify(source, destination) {
-    let contents;
-    contents = await this.consume(source);
+    const { contents, length } = await this.consume(source);
     return new Promise((resolve) => {
-      _(this._prepend)
-        .concat(contents)
-        .pipe(this.createPipeline())
-        .concat(_(this._append))
-        .pipe(destination);
+      if (length > 0) {
+        _(this._prepend)
+          .concat(contents)
+          .pipe(this.createPipeline())
+          .concat(_(this._append))
+          .pipe(destination);
+      } else if (this._append.length > 0 || this._prepend.length > 0) {
+        _(this._prepend.concat(this._append))
+          .pipe(destination);
+      } else {
+        resolve();
+      }
 
       destination.on('finish', () => {
         resolve();

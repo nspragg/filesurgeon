@@ -1,7 +1,7 @@
 import * as  _ from 'highland';
 import * as fs from 'fs';
 import { promisify } from 'util';
-import { StreamWriter } from './streamWriter';
+import { StreamEditor } from './streamEditor';
 import { Writer } from './writer';
 import { createStream } from './lineStream';
 
@@ -85,17 +85,7 @@ export default class FileSurgeon {
 
   // tslint:disable-next-line:valid-jsdoc
   /**
-   * Static factory method to an instance of FileSurgeon
-   *
-   * @static
-   * @memberOf FileSurgeon
-   * @method
-   * create
-   * @return FileSurgeon 
-   * @example
-   * import FileSurgeon from 'FileSurgeon';
-   *
-   * const surgeon = FileSurgeon.create(file);
+   * @deprecated since version 1.2.0
    */
   static create(filename: string): FileSurgeon {
     return new FileSurgeon(filename);
@@ -103,19 +93,27 @@ export default class FileSurgeon {
 
   // tslint:disable-next-line:valid-jsdoc
   /**
-  * Returns an instance of Writer to modify file contents
-  *
-  * @memberOf FileSurgeon
-  * @method
-  * edit
-  * @param {string} filename
-  * @return Writer
-  * @example
-  * import FileSurgeon from 'FileSurgeon';
-  *
-  * const contents = FileSurgeon.create(filename).edit();
-  */
+   * Static factory method to an instance of FileSurgeon
+   *
+   * @static
+   * @memberOf FileSurgeon
+   * @method
+   * create
+   * @return StreamEditor
+   * @example
+   * import FileSurgeon from 'FileSurgeon';
+   *
+   * const surgeon = FileSurgeon.edit(file);
+   */
+  static edit(filename: string): StreamEditor {
+    return new StreamEditor(filename);
+  }
+
+  // tslint:disable-next-line:valid-jsdoc
+  /**
+   * @deprecated since version 1.2.0
+   */
   edit(): Writer {
-    return new StreamWriter(this.filename);
+    return new StreamEditor(this.filename);
   }
 }

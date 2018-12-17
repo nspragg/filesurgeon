@@ -2,11 +2,11 @@ import { assert } from 'chai';
 import * as path from 'path';
 import * as FileSurgeon from '../index';
 import * as File from 'file-js';
-import { copy, getAbsolutePath, deleteFile } from './utils';
+import { copy, getAbsolutePath, deleteFile, touchSync } from './utils';
 
 const fixture = 'input.txt';
 
-describe('Stream', () => {
+describe('StreamEditor', () => {
   describe('.prepend', () => {
     let file;
     beforeEach(() => {
@@ -20,6 +20,19 @@ describe('Stream', () => {
     });
 
     it('inserts a line at the beginning of the file', async () => {
+      await FileSurgeon.edit(file)
+        .prepend('prepended line1')
+        .prepend('prepended line2')
+        .prepend('prepended line3')
+        .save();
+
+      const arr = await FileSurgeon.asArray(file);
+      const expected = await FileSurgeon.asArray(getAbsolutePath('prepend.txt'));
+
+      assert.deepEqual(arr, expected);
+    });
+
+    it('supports edit via instance', async () => {
       await FileSurgeon.create(file)
         .edit()
         .prepend('prepended line1')
@@ -36,19 +49,22 @@ describe('Stream', () => {
 
   describe('.append', () => {
     let file;
+    let emptyFile;
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
       file = getAbsolutePath(fixture + '_tmp1');
+      emptyFile = getAbsolutePath('_empty_tmp');
       copy(source, file);
+      touchSync(emptyFile);
     });
 
     afterEach(() => {
       deleteFile(file);
+      deleteFile(emptyFile);
     });
 
     it('appends a line at the end of the file', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .append('appended line1')
         .append('appended line2')
         .append('appended line3')
@@ -58,23 +74,53 @@ describe('Stream', () => {
       const expected = await FileSurgeon.asArray(getAbsolutePath('append.txt'));
       assert.deepEqual(arr, expected);
     });
+
+    it('appends to an empty file', async () => {
+      await FileSurgeon.edit(file)
+        .append('appended line1')
+        .append('appended line2')
+        .append('appended line3')
+        .save();
+
+      const arr = await FileSurgeon.asArray(file);
+      const expected = await FileSurgeon.asArray(getAbsolutePath('append.txt'));
+      assert.deepEqual(arr, expected);
+    });
+
+    it('appends to an empty file', async () => {
+      await FileSurgeon.edit(emptyFile)
+        .append('appended line1')
+        .append('appended line2')
+        .append('appended line3')
+        .save();
+
+      const arr = await FileSurgeon.asArray(emptyFile);
+      assert.deepEqual(arr, [
+        'appended line1',
+        'appended line2',
+        'appended line3'
+      ]);
+    });
   });
 
   describe('.set', () => {
     let file;
+    let emptyFile;
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
       file = getAbsolutePath(fixture + '_tmp');
+      emptyFile = getAbsolutePath('_empty_tmp');
       copy(source, file);
+      touchSync(emptyFile);
     });
 
     afterEach(() => {
       deleteFile(file);
+      deleteFile(emptyFile);
     });
 
     it('over writes an existing lines', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .set(1, 'NEW1')
         .save();
 
@@ -84,8 +130,7 @@ describe('Stream', () => {
     });
 
     it('chains multiple calls', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .set(1, 'NEW1')
         .set(2, 'NEW2')
         .save();
@@ -93,6 +138,15 @@ describe('Stream', () => {
       const arr = await FileSurgeon.asArray(file);
       const expected = await FileSurgeon.asArray(getAbsolutePath('multi-set.txt'));
       assert.deepEqual(arr, expected);
+    });
+
+    it('does not set lines for empty', async () => {
+      await FileSurgeon.edit(emptyFile)
+        .set(1, 'NEW1')
+        .save();
+
+      const arr = await FileSurgeon.asArray(emptyFile);
+      assert.deepEqual(arr, []);
     });
   });
 
@@ -109,8 +163,7 @@ describe('Stream', () => {
     });
 
     it('maps each line using a given fn', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .map((line) => {
           return line.toUpperCase();
         })
@@ -122,8 +175,7 @@ describe('Stream', () => {
     });
 
     it('chains multiple calls', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .map((line) => {
           return line.toUpperCase();
         })
@@ -151,8 +203,7 @@ describe('Stream', () => {
     });
 
     it('applies a given filter', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .filter((line) => {
           return /CAPITAL/.test(line);
         })
@@ -164,8 +215,7 @@ describe('Stream', () => {
     });
 
     it('resets line count after filter', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .filter((line) => {
           return /DIGIT/.test(line);
         })
@@ -193,8 +243,7 @@ describe('Stream', () => {
     });
 
     it('replaces 1st instance of x with y', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .replace('TWO', '2')
         .save();
 
@@ -204,8 +253,7 @@ describe('Stream', () => {
     });
 
     it('replaces all instances of x with y using a regex', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .replace(new RegExp('TWO', 'g'), '2')
         .save();
 
@@ -215,8 +263,7 @@ describe('Stream', () => {
     });
 
     it('chains multiple calls', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .replace(new RegExp('TWO', 'g'), '2')
         .replace('B2', '**')
         .save();
@@ -240,8 +287,7 @@ describe('Stream', () => {
     });
 
     it('performs multiple edits', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .set(1, 'line1')
         .set(2, 'line2')
         .replace(/SMALL/g, 'LARGE')
@@ -273,8 +319,7 @@ describe('Stream', () => {
 
     it('cleans up temp resources on error', async () => {
       try {
-        await FileSurgeon.create(file)
-          .edit()
+        await FileSurgeon.edit(file)
           .filter(() => {
             throw new Error('bad news');
           })
@@ -304,8 +349,7 @@ describe('Stream', () => {
 
     it('saves changes to a specified file', async () => {
 
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .replace('TWO', '2')
         .saveAs(dest);
 
@@ -328,8 +372,7 @@ describe('Stream', () => {
     });
 
     it('delete a line specified by lie number', async () => {
-      await FileSurgeon.create(file)
-        .edit()
+      await FileSurgeon.edit(file)
         .delete(10)
         .delete(20)
         .save();
