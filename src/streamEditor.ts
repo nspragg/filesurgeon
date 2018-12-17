@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 import { createStream } from './lineStream';
 import bind from './bind';
-import { Editor } from './Editor';
+import { Editor } from './editor';
 
 const rename = promisify(fs.rename);
 const rm = promisify(fs.unlink);
