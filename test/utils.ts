@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export function getAbsolutePath(file: string): string {
-  return path.join(__dirname + '/fixtures/', file);
+  return path.join(`${__dirname}/fixtures/`, file);
 }
 
 export function qualifyNames(names: string[]): string[] {

@@ -1,13 +1,8 @@
-import * as path from 'path';
 import * as  _ from 'highland';
-import * as fs from 'fs';
-import { promisify } from 'util';
 import { createStream } from './lineStream';
 import bind from './bind';
 import { Editor } from './editor';
-
-const rename = promisify(fs.rename);
-const rm = promisify(fs.unlink);
+import { overwrite, save } from './base';
 
 /** @class */
 /** @implements {Editor} */
@@ -194,41 +189,7 @@ export class BufferedEditor implements Editor {
    *  .save();
    */
   async save(): Promise<any> {
-    let tmp;
-    try {
-      tmp = this.getTempFile();
-
-      process.setMaxListeners(0);
-      process.on('SIGINT', () => {
-        this.deleteTmpFile(tmp);
-        process.exit(1);
-      });
-
-      await this.internalSave(tmp);
-      await rename(tmp, this.filename);
-
-    } finally {
-      this.deleteTmpFile(tmp);
-    }
-  }
-
-  private async internalSave(file): Promise<any> {
-    let source;
-    let dest;
-
-    try {
-      source = this.createSourceStream();
-      dest = fs.createWriteStream(file);
-      await this.modify(dest);
-
-    } finally {
-      return new Promise((resolve, reject) => {
-        dest.on('close', resolve);
-        dest.on('error', reject);
-        dest.destroy();
-        source.destroy();
-      });
-    }
+    await overwrite(this.modify, this.filename);
   }
 
   // tslint:disable-next-line:valid-jsdoc
@@ -249,12 +210,12 @@ export class BufferedEditor implements Editor {
    *  .saveAs('myFile');
    */
   async saveAs(file): Promise<any> {
-    return this.internalSave(file);
+    await save(this.filename, file, this.modify);
   }
 
   // tslint:disable-next-line:valid-jsdoc
   /**
-   * Writes changes to stdout without modifying the source file. Useful for testing changes. 
+   * Writes changes to stdout without modifying the source file. Useful for testing changes.
    *
    * @method
    * preview
@@ -279,22 +240,6 @@ export class BufferedEditor implements Editor {
     } finally {
       source.destroy();
     }
-  }
-
-  private deleteTmpFile(tmp) {
-    if (fs.existsSync(tmp)) {
-      rm(tmp);
-    }
-  }
-
-  private getTempFile() {
-    const name = 'tmp_' +
-      process.pid + '_' +
-      Math.random()
-        .toString(36)
-        .substring(5);
-
-    return path.join(path.dirname(this.filename), name);
   }
 
   private createSourceStream() {

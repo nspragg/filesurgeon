@@ -1,16 +1,11 @@
-import * as path from 'path';
 import * as  _ from 'highland';
-import * as fs from 'fs';
-import { promisify } from 'util';
 import { createStream } from './lineStream';
 import bind from './bind';
 import { Editor } from './editor';
-
-const rename = promisify(fs.rename);
-const rm = promisify(fs.unlink);
+import { overwrite, save } from './base';
 
 function toLine(obj) {
-  return obj.data + '\n';
+  return `${obj.data}\n`;
 }
 
 function toObject() {
@@ -76,7 +71,7 @@ export class StreamEditor implements Editor {
   private _append: string[];
   private transforms: any[];
 
-  constructor(filename: string, encoding = 'utf8') {
+  constructor(filename: string) {
     this.filename = filename;
     this._prepend = [];
     this._append = [];
@@ -250,43 +245,46 @@ export class StreamEditor implements Editor {
    *  .map(fn)
    *  .save();
    */
+
   async save(): Promise<any> {
-    let tmp;
-    try {
-      tmp = this.getTempFile();
+    await overwrite(this.modify, this.filename);
 
-      process.setMaxListeners(0);
-      process.on('SIGINT', () => {
-        this.deleteTmpFile(tmp);
-        process.exit(1);
-      });
+    //   let tmp;
+    //   try {
+    //     tmp = this.getTempFile();
 
-      await this.internalSave(tmp);
-      await rename(tmp, this.filename);
+    //     process.setMaxListeners(0);
+    //     process.on('SIGINT', () => {
+    //       this.deleteTmpFile(tmp);
+    //       process.exit(1);
+    //     });
 
-    } finally {
-      this.deleteTmpFile(tmp);
-    }
+    //     await this.internalSave(tmp);
+    //     await rename(tmp, this.filename);
+
+    //   } finally {
+    //     this.deleteTmpFile(tmp);
+    //   }
   }
 
-  private async internalSave(file): Promise<any> {
-    let source;
-    let dest;
+  // private async internalSave(file): Promise<any> {
+  //   let source;
+  //   let dest;
 
-    try {
-      source = this.createSourceStream();
-      dest = fs.createWriteStream(file);
-      await this.modify(source, dest);
+  //   try {
+  //     source = this.createSourceStream();
+  //     dest = fs.createWriteStream(file);
+  //     await this.modify(source, dest);
 
-    } finally {
-      return new Promise((resolve, reject) => {
-        dest.on('close', resolve);
-        dest.on('error', reject);
-        dest.destroy();
-        source.destroy();
-      });
-    }
-  }
+  //   } finally {
+  //     return new Promise((resolve, reject) => {
+  //       dest.on('close', resolve);
+  //       dest.on('error', reject);
+  //       dest.destroy();
+  //       source.destroy();
+  //     });
+  //   }
+  // }
 
   // tslint:disable-next-line:valid-jsdoc
   /**
@@ -306,12 +304,12 @@ export class StreamEditor implements Editor {
    *  .saveAs('myFile');
    */
   async saveAs(file): Promise<any> {
-    return this.internalSave(file);
+    return save(this.filename, file, this.modify);
   }
 
   // tslint:disable-next-line:valid-jsdoc
   /**
-   * Writes changes to stdout without modifying the source file. Useful for testing changes. 
+   * Writes changes to stdout without modifying the source file. Useful for testing changes.
    *
    * @method
    * preview
@@ -336,22 +334,6 @@ export class StreamEditor implements Editor {
     } finally {
       source.destroy();
     }
-  }
-
-  private deleteTmpFile(tmp) {
-    if (fs.existsSync(tmp)) {
-      rm(tmp);
-    }
-  }
-
-  private getTempFile() {
-    const name = 'tmp_' +
-      process.pid + '_' +
-      Math.random()
-        .toString(36)
-        .substring(5);
-
-    return path.join(path.dirname(this.filename), name);
   }
 
   private createPipeline() {
@@ -406,7 +388,7 @@ export class StreamEditor implements Editor {
     });
   }
 
-  private async modify(source, destination) {
+  private async modify(destination, source) {
     const { contents, length } = await this.consume(source);
     return new Promise((resolve) => {
       if (length > 0) {

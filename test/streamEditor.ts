@@ -11,7 +11,7 @@ describe('StreamEditor', () => {
     let file;
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
-      file = getAbsolutePath(fixture + '_tmp');
+      file = getAbsolutePath(`${fixture}_tmp`);
       copy(source, file);
     });
 
@@ -52,7 +52,7 @@ describe('StreamEditor', () => {
     let emptyFile;
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
-      file = getAbsolutePath(fixture + '_tmp1');
+      file = getAbsolutePath(`${fixture}_tmp`);
       emptyFile = getAbsolutePath('_empty_tmp');
       copy(source, file);
       touchSync(emptyFile);
@@ -108,7 +108,7 @@ describe('StreamEditor', () => {
     let emptyFile;
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
-      file = getAbsolutePath(fixture + '_tmp');
+      file = getAbsolutePath(`${fixture}_tmp`);
       emptyFile = getAbsolutePath('_empty_tmp');
       copy(source, file);
       touchSync(emptyFile);
@@ -154,7 +154,7 @@ describe('StreamEditor', () => {
     let file;
     beforeEach(() => {
       const source = getAbsolutePath('small.txt');
-      file = getAbsolutePath(fixture + '_tmp');
+      file = getAbsolutePath(`${fixture}_tmp`);
       copy(source, file);
     });
 
@@ -180,7 +180,7 @@ describe('StreamEditor', () => {
           return line.toUpperCase();
         })
         .map((line) => {
-          return 'PREFIX:' + line.toUpperCase();
+          return `PREFIX:${line.toUpperCase()}`;
         })
         .save();
 
@@ -194,7 +194,7 @@ describe('StreamEditor', () => {
     let file;
     beforeEach(() => {
       const source = getAbsolutePath('input.txt');
-      file = getAbsolutePath(fixture + '_tmp');
+      file = getAbsolutePath(`${fixture}_tmp`);
       copy(source, file);
     });
 
@@ -234,7 +234,7 @@ describe('StreamEditor', () => {
     let source;
     beforeEach(() => {
       source = getAbsolutePath('input.txt');
-      file = getAbsolutePath(fixture + '_tmp');
+      file = getAbsolutePath(`${fixture}_tmp`);
       copy(source, file);
     });
 
@@ -278,7 +278,7 @@ describe('StreamEditor', () => {
     let file;
     beforeEach(() => {
       const source = getAbsolutePath('input.txt');
-      file = getAbsolutePath(fixture + '_tmp');
+      file = getAbsolutePath(`${fixture}_tmp`);
       copy(source, file);
     });
 
@@ -309,7 +309,7 @@ describe('StreamEditor', () => {
     let file;
     beforeEach(() => {
       const source = getAbsolutePath('input.txt');
-      file = getAbsolutePath(fixture + '_tmp');
+      file = getAbsolutePath(`${fixture}_tmp`);
       copy(source, file);
     });
 
@@ -325,7 +325,7 @@ describe('StreamEditor', () => {
           })
           .save();
       } catch (err) {
-        const count = File.create(path.join(__dirname + '/fixtures/'))
+        const count = File.create(path.join(`${__dirname}/fixtures/`))
           .getFilesSync('tmp_*');
         assert.equal(count.length, 0, 'temp files remaining');
       }
@@ -337,7 +337,7 @@ describe('StreamEditor', () => {
     let dest;
     beforeEach(() => {
       const source = getAbsolutePath('input.txt');
-      file = getAbsolutePath(fixture + '_tmp');
+      file = getAbsolutePath(`${fixture}_tmp`);
       dest = getAbsolutePath('save-as-tmp');
       copy(source, file);
     });
@@ -348,7 +348,6 @@ describe('StreamEditor', () => {
     });
 
     it('saves changes to a specified file', async () => {
-
       await FileSurgeon.edit(file)
         .replace('TWO', '2')
         .saveAs(dest);
@@ -363,7 +362,7 @@ describe('StreamEditor', () => {
     let file;
     beforeEach(() => {
       const source = getAbsolutePath(fixture);
-      file = getAbsolutePath(fixture + '_tmp');
+      file = getAbsolutePath(`${fixture}_tmp`);
       copy(source, file);
     });
 
