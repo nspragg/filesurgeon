@@ -2,7 +2,7 @@ import * as  _ from 'highland';
 import { createStream } from './lineStream';
 import bind from './bind';
 import { Editor } from './editor';
-import { overwrite, save } from './base';
+import { overwrite, save } from './files';
 
 /** @class */
 /** @implements {Editor} */
