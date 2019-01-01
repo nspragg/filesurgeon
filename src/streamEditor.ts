@@ -117,7 +117,9 @@ export class StreamEditor implements Editor {
    *  .save();
    */
   prepend(line: string): Editor {
-    this._prepend.push(line);
+    if (line !== undefined && line !== null) {
+      this._prepend.push(`${line}`);
+    }
     return this;
   }
 
@@ -137,7 +139,9 @@ export class StreamEditor implements Editor {
    *  .save();
    */
   append(line: string): Editor {
-    this._append.push(`${line}\n`);
+    if (line !== undefined && line !== null) {
+      this._append.push(`${line}\n`);
+    }
     return this;
   }
 
@@ -248,43 +252,7 @@ export class StreamEditor implements Editor {
 
   async save(): Promise<any> {
     await overwrite(this.modify, this.filename);
-
-    //   let tmp;
-    //   try {
-    //     tmp = this.getTempFile();
-
-    //     process.setMaxListeners(0);
-    //     process.on('SIGINT', () => {
-    //       this.deleteTmpFile(tmp);
-    //       process.exit(1);
-    //     });
-
-    //     await this.internalSave(tmp);
-    //     await rename(tmp, this.filename);
-
-    //   } finally {
-    //     this.deleteTmpFile(tmp);
-    //   }
   }
-
-  // private async internalSave(file): Promise<any> {
-  //   let source;
-  //   let dest;
-
-  //   try {
-  //     source = this.createSourceStream();
-  //     dest = fs.createWriteStream(file);
-  //     await this.modify(source, dest);
-
-  //   } finally {
-  //     return new Promise((resolve, reject) => {
-  //       dest.on('close', resolve);
-  //       dest.on('error', reject);
-  //       dest.destroy();
-  //       source.destroy();
-  //     });
-  //   }
-  // }
 
   // tslint:disable-next-line:valid-jsdoc
   /**
@@ -371,10 +339,6 @@ export class StreamEditor implements Editor {
         }
       });
 
-      source.on('error', (err) => {
-        reject(err);
-      });
-
       source.on('end', () => {
         dest.end();
         if (last === '') { // remove extra blank line
@@ -390,6 +354,7 @@ export class StreamEditor implements Editor {
 
   private async modify(destination, source) {
     const { contents, length } = await this.consume(source);
+
     return new Promise((resolve) => {
       if (length > 0) {
         _(this._prepend)
@@ -409,4 +374,5 @@ export class StreamEditor implements Editor {
       });
     });
   }
+
 }

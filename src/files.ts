@@ -42,16 +42,30 @@ export async function overwrite(fn, filename): Promise<any> {
 export async function save(sourceFile, destinationFile, modify): Promise<any> {
   let source;
   let destination;
+  let error;
   try {
-    source = createStream(sourceFile);
-    destination = fs.createWriteStream(destinationFile);
+    try {
+      source = createStream(sourceFile);
+      destination = fs.createWriteStream(destinationFile);
+    } catch (e) {
+      error = e;
+      throw error;
+    }
     await modify(destination, source);
+
   } finally {
     return new Promise((resolve, reject) => {
-      destination.on('close', resolve);
-      destination.on('error', reject);
-      destination.destroy();
-      source.destroy();
+      if (error) {
+        reject(error);
+      }
+      if (destination) {
+        destination.on('close', resolve);
+        destination.on('error', reject);
+        destination.destroy();
+      }
+      if (source) {
+        source.destroy();
+      }
     });
   }
 }

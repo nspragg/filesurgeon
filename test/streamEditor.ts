@@ -28,7 +28,6 @@ describe('StreamEditor', () => {
 
       const arr = await FileSurgeon.asArray(file);
       const expected = await FileSurgeon.asArray(getAbsolutePath('prepend.txt'));
-
       assert.deepEqual(arr, expected);
     });
 
@@ -42,6 +41,18 @@ describe('StreamEditor', () => {
 
       const arr = await FileSurgeon.asArray(file);
       const expected = await FileSurgeon.asArray(getAbsolutePath('prepend.txt'));
+
+      assert.deepEqual(arr, expected);
+    });
+
+    it('does not prepend undefined and null values', async () => {
+      await FileSurgeon.create(file)
+        .edit()
+        .prepend(null)
+        .prepend(undefined)
+        .save();
+      const arr = await FileSurgeon.asArray(file);
+      const expected = await FileSurgeon.asArray(getAbsolutePath('input.txt'));
 
       assert.deepEqual(arr, expected);
     });
@@ -100,6 +111,17 @@ describe('StreamEditor', () => {
         'appended line2',
         'appended line3'
       ]);
+    });
+
+    it('does not append undefined and null values', async () => {
+      await FileSurgeon.edit(file)
+        .append(null)
+        .append(undefined)
+        .save();
+      const arr = await FileSurgeon.asArray(file);
+      const expected = await FileSurgeon.asArray(getAbsolutePath('input.txt'));
+
+      assert.deepEqual(arr, expected);
     });
   });
 
@@ -383,4 +405,15 @@ describe('StreamEditor', () => {
     });
   });
 
+  it('throws for non-existent files', async () => {
+    try {
+      await FileSurgeon.edit('bad-file.txt')
+        .append('data')
+        .save();
+    } catch (err) {
+      assert.ok(err);
+      return assert.equal(err.message, 'ENOENT: no such file or directory: bad-file.txt');
+    }
+    assert.fail('Expected to fail!');
+  });
 });
