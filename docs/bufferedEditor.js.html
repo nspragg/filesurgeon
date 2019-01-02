@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>streamEditor.js - Documentation</title>
+    <title>bufferedEditor.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">streamEditor.js</h1>
+    <h1 class="page-title">bufferedEditor.js</h1>
     
 
     
@@ -53,65 +53,12 @@ const _ = require("highland");
 const lineStream_1 = require("./lineStream");
 const bind_1 = require("./bind");
 const files_1 = require("./files");
-function toLine(obj) {
-    return `${obj.data}\n`;
-}
-function toObject() {
-    let count = 0;
-    return (line) => {
-        return {
-            data: line.toString(),
-            // tslint:disable-next-line:no-increment-decrement
-            num: ++count
-        };
-    };
-}
-function reset() {
-    let count = 0;
-    return _.map((line) => {
-        // tslint:disable-next-line:no-increment-decrement
-        line.num = ++count;
-        return line;
-    });
-}
-function setline(lineNumber, to) {
-    return _.map((line) => {
-        if (line.num === lineNumber) {
-            line.data = to;
-        }
-        return line;
-    });
-}
-function map(fn) {
-    return _.map((line) => {
-        line.data = fn(line.data);
-        return line;
-    });
-}
-function filter(fn) {
-    return _.filter((line) => {
-        return fn(line.data);
-    });
-}
-function deleteLine(n) {
-    return _.filter((line) => {
-        return line.num !== n;
-    });
-}
-function replace(from, to) {
-    return _.map((line) => {
-        line.data = line.data.replace(from, to);
-        return line;
-    });
-}
 /** @class */
 /** @implements {Editor} */
-class StreamEditor {
+class BufferedEditor {
     constructor(filename) {
         this.filename = filename;
-        this._prepend = [];
-        this._append = [];
-        this.transforms = [];
+        this.writeBuffer = [];
         bind_1.default(this);
     }
     // tslint:disable-next-line:valid-jsdoc
@@ -132,7 +79,12 @@ class StreamEditor {
      *  .save();
      */
     set(i, line) {
-        this.transforms.push(setline(i, line));
+        const pos = i - 1;
+        if (pos > this.writeBuffer.length) {
+            const ext = Array(pos - this.writeBuffer.length).fill('\n');
+            this.writeBuffer = this.writeBuffer.concat(ext);
+        }
+        this.writeBuffer[pos] = `${line}\n`;
         return this;
     }
     // tslint:disable-next-line:valid-jsdoc
@@ -151,9 +103,7 @@ class StreamEditor {
      *  .save();
      */
     prepend(line) {
-        if (line !== undefined &amp;&amp; line !== null) {
-            this._prepend.push(`${line}`);
-        }
+        this.writeBuffer.unshift(`${line}\n`);
         return this;
     }
     // tslint:disable-next-line:valid-jsdoc
@@ -172,9 +122,7 @@ class StreamEditor {
      *  .save();
      */
     append(line) {
-        if (line !== undefined &amp;&amp; line !== null) {
-            this._append.push(`${line}\n`);
-        }
+        this.writeBuffer.push(`${line}\n`);
         return this;
     }
     // tslint:disable-next-line:valid-jsdoc
@@ -195,7 +143,9 @@ class StreamEditor {
      *  .save();
      */
     replace(x, y) {
-        this.transforms.push(replace(x, y));
+        this.writeBuffer = this.writeBuffer.map((line) => {
+            return line.replace(x, y);
+        });
         return this;
     }
     // tslint:disable-next-line:valid-jsdoc
@@ -216,7 +166,7 @@ class StreamEditor {
      *  .save();
      */
     map(fn) {
-        this.transforms.push(map(fn));
+        this.writeBuffer = this.writeBuffer.map(fn);
         return this;
     }
     // tslint:disable-next-line:valid-jsdoc
@@ -237,8 +187,7 @@ class StreamEditor {
      *  .save();
      */
     filter(fn) {
-        this.transforms.push(filter(fn));
-        this.transforms.push(reset());
+        this.writeBuffer = this.writeBuffer.filter(fn);
         return this;
     }
     // tslint:disable-next-line:valid-jsdoc
@@ -257,8 +206,8 @@ class StreamEditor {
      *  .save(); // delete line 10
      */
     delete(n) {
-        this.transforms.push(deleteLine(n));
-        this.transforms.push(reset());
+        const pos = n - 1;
+        this.writeBuffer.splice(pos, 1);
         return this;
     }
     // tslint:disable-next-line:valid-jsdoc
@@ -301,7 +250,7 @@ class StreamEditor {
      */
     saveAs(file) {
         return __awaiter(this, void 0, void 0, function* () {
-            return files_1.save(this.filename, file, this.modify);
+            yield files_1.save(this.filename, file, this.modify);
         });
     }
     // tslint:disable-next-line:valid-jsdoc
@@ -326,74 +275,23 @@ class StreamEditor {
             const dest = process.stdout;
             try {
                 source = this.createSourceStream();
-                yield this.modify(source, dest);
+                yield this.modify(dest);
             }
             finally {
                 source.destroy();
             }
         });
     }
-    createPipeline() {
-        const transforms = [
-            _.map(toObject()),
-            ...this.transforms,
-            _.map(toLine)
-        ];
-        this.transforms = [];
-        return _.pipeline(...transforms);
-    }
     createSourceStream() {
         const source = lineStream_1.createStream(this.filename);
         return source;
     }
-    consume(source) {
-        let dest = _();
-        let count = 0;
-        let last;
-        return new Promise((resolve, reject) => {
-            source.on('readable', () => {
-                let line;
-                // tslint:disable-next-line:no-conditional-assignment
-                while (null !== (line = source.read())) {
-                    if (line instanceof Buffer) {
-                        line = line.toString('utf8');
-                    }
-                    last = line;
-                    // tslint:disable-next-line:no-increment-decrement
-                    count++;
-                    dest.write(line);
-                }
-            });
-            source.on('end', () => {
-                dest.end();
-                if (last === '') { // remove extra blank line
-                    dest = _(dest).take(count - 1);
-                }
-                resolve({
-                    contents: dest,
-                    length: count
-                });
-            });
-        });
-    }
-    modify(destination, source) {
+    modify(destination) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { contents, length } = yield this.consume(source);
             return new Promise((resolve) => {
-                if (length > 0) {
-                    _(this._prepend)
-                        .concat(contents)
-                        .pipe(this.createPipeline())
-                        .concat(_(this._append))
-                        .pipe(destination);
-                }
-                else if (this._append.length > 0 || this._prepend.length > 0) {
-                    _(this._prepend.concat(this._append))
-                        .pipe(destination);
-                }
-                else {
+                if (this.writeBuffer.length === 0)
                     resolve();
-                }
+                _(this.writeBuffer).pipe(destination);
                 destination.on('finish', () => {
                     resolve();
                 });
@@ -401,7 +299,7 @@ class StreamEditor {
         });
     }
 }
-exports.StreamEditor = StreamEditor;
+exports.BufferedEditor = BufferedEditor;
 </code></pre>
         </article>
     </section>

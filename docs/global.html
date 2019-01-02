@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.concat">concat</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#edit">edit</a></li></ul></li><li><a href="StreamEditor.html">StreamEditor</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#saveAs">saveAs</a></li><li><a href="global.html#set">set</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="BufferedEditor.html">BufferedEditor</a></li><li><a href="FileSurgeon.html">FileSurgeon</a><ul class='methods'><li data-type='method'><a href="FileSurgeon.html#.asArray">asArray</a></li><li data-type='method'><a href="FileSurgeon.html#.asString">asString</a></li><li data-type='method'><a href="FileSurgeon.html#.concat">concat</a></li><li data-type='method'><a href="FileSurgeon.html#.create">create</a></li><li data-type='method'><a href="FileSurgeon.html#.edit">edit</a></li><li data-type='method'><a href="FileSurgeon.html#.newFile">newFile</a></li><li data-type='method'><a href="FileSurgeon.html#edit">edit</a></li></ul></li><li><a href="StreamEditor.html">StreamEditor</a></li></ul><h3>Global</h3><ul><li><a href="global.html#append">append</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#map">map</a></li><li><a href="global.html#prepend">prepend</a></li><li><a href="global.html#preview">preview</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#saveAs">saveAs</a></li><li><a href="global.html#set">set</a></li></ul>
 </nav>
 
 <div id="main">
@@ -216,7 +216,157 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line121">line 121</a>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line69">line 69</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .append(line)
+ .save();</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="append"><span class="type-signature"></span>append<span class="signature">(line)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Appends a given <code>line</code> to a file</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>line</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line119">line 119</a>
     </li></ul></dd>
     
 
@@ -416,6 +566,308 @@ const contents = FileSurgeon.edit(filename)
 
     
 
+    <h4 class="name" id="delete"><span class="type-signature"></span>delete<span class="signature">(fn)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Deletes line by line number</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line153">line 153</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .delete(10)
+ .save(); // delete line 10</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="filter"><span class="type-signature"></span>filter<span class="signature">(fn)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Filters the file contents using a given function</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line132">line 132</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .filter((line) => {
+     return line.length &lt; 10;
+ })
+ .save();</code></pre>
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="filter"><span class="type-signature"></span>filter<span class="signature">(fn)</span><span class="type-signature"></span></h4>
 
     
@@ -558,6 +1010,158 @@ const contents = FileSurgeon.edit(filename)
 const contents = FileSurgeon.edit(filename)
  .filter((line) => {
      return line.length &lt; 10;
+ })
+ .save();</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="map"><span class="type-signature"></span>map<span class="signature">(fn)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Maps each line using a given function</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line111">line 111</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .map((line) => {
+     return line.toLowerCase() &lt; 10;
  })
  .save();</code></pre>
 
@@ -820,7 +1424,157 @@ const contents = FileSurgeon.edit(filename)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line102">line 102</a>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line50">line 50</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .prepend(line)
+ .save();</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="prepend"><span class="type-signature"></span>prepend<span class="signature">(line)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Prepends a given <code>line</code> to a file</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>line</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line98">line 98</a>
     </li></ul></dd>
     
 
@@ -921,7 +1675,7 @@ const contents = FileSurgeon.edit(filename)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line299">line 299</a>
+        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line267">line 267</a>
     </li></ul></dd>
     
 
@@ -965,6 +1719,286 @@ const contents = FileSurgeon.edit(filename)
  .filter(fn)
  .map(fn)
  .preview(); // writes changes to stdout</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="preview"><span class="type-signature"></span>preview<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Writes changes to stdout without modifying the source file. Useful for testing changes.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line216">line 216</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .set(1, line)
+ .filter(fn)
+ .map(fn)
+ .preview(); // writes changes to stdout</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="replace"><span class="type-signature"></span>replace<span class="signature">(source, replacement)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>replaces a given string or regex for every line</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">RegExp</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>replacement</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line88">line 88</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .replace('x', 'y')
+ .replace(/x/, 'y')
+ .save();</code></pre>
 
 
 
@@ -1253,6 +2287,109 @@ const contents = FileSurgeon.edit(filename)
 
     
 
+    <h4 class="name" id="save"><span class="type-signature"></span>save<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Writes any modifications to the file</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line173">line 173</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .set(1, line)
+ .filter(fn)
+ .map(fn)
+ .save();</code></pre>
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="saveAs"><span class="type-signature"></span>saveAs<span class="signature">(filename)</span><span class="type-signature"></span></h4>
 
     
@@ -1353,7 +2490,159 @@ const contents = FileSurgeon.edit(filename)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line277">line 277</a>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line194">line 194</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .set(1, line)
+ .filter(fn)
+ .map(fn)
+ .saveAs('myFile');</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="saveAs"><span class="type-signature"></span>saveAs<span class="signature">(filename)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Writes any modifications to a given file</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line245">line 245</a>
     </li></ul></dd>
     
 
@@ -1528,7 +2817,181 @@ const contents = FileSurgeon.edit(filename)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line81">line 81</a>
+        <a href="bufferedEditor.js.html">bufferedEditor.js</a>, <a href="bufferedEditor.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Editor</p>
+</div>
+
+
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import FileSurgeon from 'FileSurgeon';
+
+const contents = FileSurgeon.edit(filename)
+ .set(1, line)
+ .set(10, anotherline)
+ .save();</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="set"><span class="type-signature"></span>set<span class="signature">(line, n)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>sets a <code>line</code> at a given line number <code>N</code></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>line</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="streamEditor.js.html">streamEditor.js</a>, <a href="streamEditor.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -1592,7 +3055,7 @@ const contents = FileSurgeon.edit(filename)
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 17 2018 12:50:38 GMT+0000 (GMT) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 02 2019 09:43:18 GMT+0000 (GMT) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
