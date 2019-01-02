@@ -136,3 +136,12 @@ const FileSurgeon = require("filesurgeon");
 const contents = FileSurgeon.asArray(file);
 console.log(contents);
 ```
+
+get lines from `file` as an array
+
+```js
+const FileSurgeon = require("filesurgeon");
+
+const lines = FileSurgeon.getLines(file, 1, 100);
+console.log(lines);
+```

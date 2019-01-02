@@ -135,6 +135,52 @@ export default class FileSurgeon {
 
   // tslint:disable-next-line:valid-jsdoc
   /**
+   * Static factory method get lines from a given file
+   *
+   * @static
+   * @memberOf FileSurgeon
+   * @method
+   * getLines
+   * @return Promise<String[]>
+   * @example
+   * import FileSurgeon from 'FileSurgeon';
+   *
+   * const lines = FileSurgeon.getLines(file, 1, 5, 10);
+   */
+  static async getLines(filename: string, ...requiredLines: number[]): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const source = createStream(filename);
+      const lines = [];
+      let count = 0;
+
+      source.on('readable', () => {
+        let line;
+        // tslint:disable-next-line:no-conditional-assignment
+        while (null !== (line = source.read())) {
+          count = count + 1;
+          if (line instanceof Buffer) {
+            line = line.toString('utf8');
+          }
+          if (requiredLines.indexOf(count) !== -1) {
+            lines.push(line);
+            break;
+          }
+        }
+      });
+
+      source.on('error', (err) => {
+        reject(err);
+      });
+
+      source.on('end', () => {
+        source.destroy();
+        resolve(lines);
+      });
+    });
+  }
+
+  // tslint:disable-next-line:valid-jsdoc
+  /**
    * @deprecated since version 1.2.0
    */
   edit(): Writer {
