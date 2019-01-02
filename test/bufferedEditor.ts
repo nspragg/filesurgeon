@@ -13,7 +13,7 @@ describe('BufferedEditor', () => {
   });
 
   it('saves an empty file', async () => {
-    await FileSurgeon.new(emptyFile)
+    await FileSurgeon.newFile(emptyFile)
       .save();
 
     const arr = await FileSurgeon.asArray(emptyFile);
@@ -22,7 +22,7 @@ describe('BufferedEditor', () => {
 
   describe('.prepend', () => {
     it('inserts a line at the beginning of the file', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .prepend('prepended line1')
         .prepend('prepended line2')
         .prepend('prepended line3')
@@ -39,7 +39,7 @@ describe('BufferedEditor', () => {
 
   describe('.append', () => {
     it('appends a line at the end of a new file', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .append('appended line1')
         .append('appended line2')
         .append('appended line3')
@@ -56,7 +56,7 @@ describe('BufferedEditor', () => {
 
   describe('.set', () => {
     it('Sets a line in a file', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .set(1, 'NEW1')
         .set(2, 'NEW2')
         .set(3, 'NEW3')
@@ -67,7 +67,7 @@ describe('BufferedEditor', () => {
     });
 
     it('overrides existing lines', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .set(1, 'NEW1')
         .set(2, 'NEW2')
         .set(1, 'NEW2')
@@ -79,7 +79,7 @@ describe('BufferedEditor', () => {
     });
 
     it('creates preceding blank lines', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .set(5, 'NEW5')
         .save();
 
@@ -96,7 +96,7 @@ describe('BufferedEditor', () => {
 
   describe('.map', () => {
     it('maps each line using a given fn', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .set(1, 'line1')
         .set(2, 'line2')
         .set(3, 'line3')
@@ -116,7 +116,7 @@ describe('BufferedEditor', () => {
 
   describe('.filter', () => {
     it('applies a given filter', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .set(1, 'line1')
         .set(2, 'line2')
         .set(3, 'line3')
@@ -132,7 +132,7 @@ describe('BufferedEditor', () => {
 
   describe('.replace', () => {
     it('replaces 1st instance of x with y', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .set(1, 'x1')
         .set(2, 'x2')
         .set(3, 'x3')
@@ -150,7 +150,7 @@ describe('BufferedEditor', () => {
 
   describe('chained calls', () => {
     it('performs multiple operations', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .append('line1')
         .set(1, 'override1')
         .set(2, 'line2')
@@ -168,7 +168,7 @@ describe('BufferedEditor', () => {
 
   describe('.delete', () => {
     it('delete a line specified by line number', async () => {
-      await FileSurgeon.new(emptyFile)
+      await FileSurgeon.newFile(emptyFile)
         .append('line1')
         .append('line2')
         .append('line3')

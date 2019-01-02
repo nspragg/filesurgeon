@@ -121,14 +121,14 @@ export default class FileSurgeon {
    * @static
    * @memberOf FileSurgeon
    * @method
-   * new
+   * newFile
    * @return StreamEditor
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
-   * const surgeon = FileSurgeon.new(file);
+   * const surgeon = FileSurgeon.newFile(file);
    */
-  static new(filename: string): BufferedEditor {
+  static newFile(filename: string): BufferedEditor {
     touchSync(filename);
     return new BufferedEditor(filename);
   }

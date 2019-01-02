@@ -19,20 +19,18 @@ npm install --save filesurgeon
 ```js
 const Filesurgeon = require("filesurgeon");
 
-await Filesurgeon.create('/tmp/somefile.txt')
-  .edit()
+await Filesurgeon.edit('/tmp/somefile.txt')
   .replace('old', 'new')
   .save();
 ```
 
 Examples: 
 
-Set lines in a file:
+Set lines in an existing file:
 ```js
 const Filesurgeon = require("filesurgeon");
 
-await Filesurgeon.create('/tmp/somefile.txt')
-  .edit()
+await Filesurgeon.edit('/tmp/somefile.txt')
   .set(1, 'first')
   .set(2, 'second')
   .set(3, 'third')
@@ -43,8 +41,7 @@ Transforms lines:
 ```js
 const Filesurgeon = require("filesurgeon");
 
-await Filesurgeon.create('/tmp/somefile.txt')
-  .edit()
+await Filesurgeon.edit('/tmp/somefile.txt')
   .map((line) => line.trim())
   .map((line) => line.toLowerCase())
   .save();
@@ -52,8 +49,7 @@ await Filesurgeon.create('/tmp/somefile.txt')
 
 Filter lines:
 ```js
-await Filesurgeon.create('/tmp/somefile.txt')
-  .edit()
+await Filesurgeon.edit('/tmp/somefile.txt')
   .filter((line) => {
     return /^[a-d]/.test(line);
   })
@@ -66,6 +62,17 @@ const Filesurgeon = require("filesurgeon");
 
 const contents =  await Filesurgeon.asArray('/tmp/somefile.txt');
 console.log(contents);
+```
+
+Creates a new file and append lines:
+```js
+const Filesurgeon = require("filesurgeon");
+
+await Filesurgeon.newFile('/tmp/somefile.txt')
+  .append('first')
+  .append('second')
+  .append('third')
+  .save();
 ```
 
 ## Documentation
