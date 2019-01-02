@@ -135,7 +135,7 @@ export default class FileSurgeon {
 
   // tslint:disable-next-line:valid-jsdoc
   /**
-   * Static factory method get lines from a given file
+   * async static factory method get lines from a given file
    *
    * @static
    * @memberOf FileSurgeon
@@ -145,7 +145,7 @@ export default class FileSurgeon {
    * @example
    * import FileSurgeon from 'FileSurgeon';
    *
-   * const lines = FileSurgeon.getLines(file, 1, 5, 10);
+   * const lines = await FileSurgeon.getLines(file, 1, 5, 10);
    */
   static async getLines(filename: string, ...requiredLines: number[]): Promise<any> {
     return new Promise((resolve, reject) => {

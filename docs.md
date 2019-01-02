@@ -142,6 +142,6 @@ get lines from `file` as an array
 ```js
 const FileSurgeon = require("filesurgeon");
 
-const lines = FileSurgeon.getLines(file, 1, 100);
+const lines = await FileSurgeon.getLines(file, 1, 100);
 console.log(lines);
 ```
