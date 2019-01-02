@@ -4,78 +4,15 @@ import bind from './bind';
 import { Editor } from './editor';
 import { overwrite, save } from './files';
 
-function toLine(obj) {
-  return `${obj.data}\n`;
-}
-
-function toObject() {
-  let count = 0;
-  return (line) => {
-    return {
-      data: line.toString(),
-      // tslint:disable-next-line:no-increment-decrement
-      num: ++count
-    };
-  };
-}
-
-function reset() {
-  let count = 0;
-  return _.map((line) => {
-    // tslint:disable-next-line:no-increment-decrement
-    line.num = ++count;
-    return line;
-  });
-}
-
-function setline(lineNumber, to) {
-  return _.map((line) => {
-    if (line.num === lineNumber) {
-      line.data = to;
-    }
-    return line;
-  });
-}
-
-function map(fn) {
-  return _.map((line) => {
-    line.data = fn(line.data);
-    return line;
-  });
-}
-
-function filter(fn) {
-  return _.filter((line) => {
-    return fn(line.data);
-  });
-}
-
-function deleteLine(n) {
-  return _.filter((line) => {
-    return line.num !== n;
-  });
-}
-
-function replace(from, to) {
-  return _.map((line) => {
-    line.data = line.data.replace(from, to);
-    return line;
-  });
-}
-
 /** @class */
 /** @implements {Editor} */
-export class StreamEditor implements Editor {
+export class BufferedEditor implements Editor {
   private filename: string;
-  private _prepend: string[];
-  private _append: string[];
-  private transforms: any[];
+  private writeBuffer: string[];
 
   constructor(filename: string) {
     this.filename = filename;
-    this._prepend = [];
-    this._append = [];
-    this.transforms = [];
+    this.writeBuffer = [];
     bind(this);
   }
 
@@ -97,7 +34,12 @@ export class StreamEditor implements Editor {
    *  .save();
    */
   set(i: number, line: string): Editor {
-    this.transforms.push(setline(i, line));
+    const pos = i - 1;
+    if (pos > this.writeBuffer.length) {
+      const ext = Array(pos - this.writeBuffer.length).fill('\n');
+      this.writeBuffer = this.writeBuffer.concat(ext);
+    }
+    this.writeBuffer[pos] = `${line}\n`;
     return this;
   }
 
@@ -117,9 +59,7 @@ export class StreamEditor implements Editor {
    *  .save();
    */
   prepend(line: string): Editor {
-    if (line !== undefined && line !== null) {
-      this._prepend.push(`${line}`);
-    }
+    this.writeBuffer.unshift(`${line}\n`);
     return this;
   }
 
@@ -139,9 +79,7 @@ export class StreamEditor implements Editor {
    *  .save();
    */
   append(line: string): Editor {
-    if (line !== undefined && line !== null) {
-      this._append.push(`${line}\n`);
-    }
+    this.writeBuffer.push(`${line}\n`);
     return this;
   }
 
@@ -163,7 +101,9 @@ export class StreamEditor implements Editor {
    *  .save();
    */
   replace(x: string, y: string): Editor {
-    this.transforms.push(replace(x, y));
+    this.writeBuffer = this.writeBuffer.map((line) => {
+      return line.replace(x, y);
+    });
     return this;
   }
 
@@ -185,7 +125,7 @@ export class StreamEditor implements Editor {
    *  .save();
    */
   map(fn: (str: any) => string): Editor {
-    this.transforms.push(map(fn));
+    this.writeBuffer = this.writeBuffer.map(fn);
     return this;
   }
 
@@ -207,8 +147,7 @@ export class StreamEditor implements Editor {
    *  .save();
    */
   filter(fn: (str: any) => boolean): Editor {
-    this.transforms.push(filter(fn));
-    this.transforms.push(reset());
+    this.writeBuffer = this.writeBuffer.filter(fn);
     return this;
   }
 
@@ -228,8 +167,8 @@ export class StreamEditor implements Editor {
    *  .save(); // delete line 10
    */
   delete(n: number): Editor {
-    this.transforms.push(deleteLine(n));
-    this.transforms.push(reset());
+    const pos = n - 1;
+    this.writeBuffer.splice(pos, 1);
     return this;
   }
 
@@ -249,7 +188,6 @@ export class StreamEditor implements Editor {
    *  .map(fn)
    *  .save();
    */
-
   async save(): Promise<any> {
     await overwrite(this.modify, this.filename);
   }
@@ -272,7 +210,7 @@ export class StreamEditor implements Editor {
    *  .saveAs('myFile');
    */
   async saveAs(file): Promise<any> {
-    return save(this.filename, file, this.modify);
+    await save(this.filename, file, this.modify);
   }
 
   // tslint:disable-next-line:valid-jsdoc
@@ -297,21 +235,11 @@ export class StreamEditor implements Editor {
 
     try {
       source = this.createSourceStream();
-      await this.modify(source, dest);
+      await this.modify(dest);
 
     } finally {
       source.destroy();
     }
-  }
-
-  private createPipeline() {
-    const transforms = [
-      _.map(toObject()),
-      ...this.transforms,
-      _.map(toLine)
-    ];
-    this.transforms = [];
-    return _.pipeline(...transforms);
   }
 
   private createSourceStream() {
@@ -319,60 +247,14 @@ export class StreamEditor implements Editor {
     return source;
   }
 
-  private consume(source): Promise<any> {
-    let dest = _();
-    let count = 0;
-    let last;
-
-    return new Promise((resolve, reject) => {
-      source.on('readable', () => {
-        let line;
-        // tslint:disable-next-line:no-conditional-assignment
-        while (null !== (line = source.read())) {
-          if (line instanceof Buffer) {
-            line = line.toString('utf8');
-          }
-          last = line;
-          // tslint:disable-next-line:no-increment-decrement
-          count++;
-          dest.write(line);
-        }
-      });
-
-      source.on('end', () => {
-        dest.end();
-        if (last === '') { // remove extra blank line
-          dest = _(dest).take(count - 1);
-        }
-        resolve({
-          contents: dest,
-          length: count
-        });
-      });
-    });
-  }
-
-  private async modify(destination, source) {
-    const { contents, length } = await this.consume(source);
-
+  private async modify(destination) {
     return new Promise((resolve) => {
-      if (length > 0) {
-        _(this._prepend)
-          .concat(contents)
-          .pipe(this.createPipeline())
-          .concat(_(this._append))
-          .pipe(destination);
-      } else if (this._append.length > 0 || this._prepend.length > 0) {
-        _(this._prepend.concat(this._append))
-          .pipe(destination);
-      } else {
-        resolve();
-      }
+      if (this.writeBuffer.length === 0) resolve();
 
+      _(this.writeBuffer).pipe(destination);
       destination.on('finish', () => {
         resolve();
       });
     });
   }
-
 }

@@ -2,10 +2,15 @@ import * as  _ from 'highland';
 import * as fs from 'fs';
 import { promisify } from 'util';
 import { StreamEditor } from './streamEditor';
+import { BufferedEditor } from './bufferedEditor';
 import { Writer } from './writer';
 import { createStream } from './lineStream';
 
 const readFileAsync = promisify(fs.readFile);
+
+export function touchSync(filename) {
+  fs.closeSync(fs.openSync(filename, 'w'));
+}
 
 /** @class */
 export default class FileSurgeon {
@@ -93,12 +98,12 @@ export default class FileSurgeon {
 
   // tslint:disable-next-line:valid-jsdoc
   /**
-   * Static factory method to an instance of FileSurgeon
+   * Static factory method to edit existing file contents
    *
    * @static
    * @memberOf FileSurgeon
    * @method
-   * create
+   * edit
    * @return StreamEditor
    * @example
    * import FileSurgeon from 'FileSurgeon';
@@ -107,6 +112,25 @@ export default class FileSurgeon {
    */
   static edit(filename: string): StreamEditor {
     return new StreamEditor(filename);
+  }
+
+  // tslint:disable-next-line:valid-jsdoc
+  /**
+   * Static factory method create new files
+   *
+   * @static
+   * @memberOf FileSurgeon
+   * @method
+   * new
+   * @return StreamEditor
+   * @example
+   * import FileSurgeon from 'FileSurgeon';
+   *
+   * const surgeon = FileSurgeon.new(file);
+   */
+  static new(filename: string): BufferedEditor {
+    touchSync(filename);
+    return new BufferedEditor(filename);
   }
 
   // tslint:disable-next-line:valid-jsdoc
