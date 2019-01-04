@@ -5,6 +5,7 @@
 ![github-issues](https://img.shields.io/github/issues/nspragg/filesurgeon.svg)
 ![stars](https://img.shields.io/github/stars/nspragg/filesurgeon.svg)
 ![forks](https://img.shields.io/github/forks/nspragg/filesurgeon.svg)
+[![HitCount](http://hits.dwyl.io/nspragg/filesurgeon.svg)](http://hits.dwyl.io/nspragg/filesurgeon)
 
 > Manipulate text files the easy way
 
